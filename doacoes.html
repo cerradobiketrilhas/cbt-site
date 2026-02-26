@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Doações - CBT</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<nav class="nav">
+  <div class="logo">
+    <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas">
+  </div>
+
+  <div class="menu">
+    <a href="index.html">INÍCIO</a>
+    <a href="sobre.html">SOBRE</a>
+    <a href="localizacao.html">LOCALIZAÇÃO</a>
+    <a href="doacoes.html">DOAÇÕES</a>
+    <a href="ajudar.html">COMO AJUDAR</a>
+    <a href="transparencia.html">TRANSPARÊNCIA</a>
+    <a href="contato.html">CONTATO</a>
+  </div>
+</nav>
+
+<section class="box">
+
+  <h2>Apoie o CBT</h2>
+  <p class="sub">Projeto mantido por voluntários</p>
+
+  <div class="meta-texto">
+    <span>Meta: R$ 5000</span>
+  </div>
+
+  <a class="btn"
+     href="https://nubank.com.br/pagar/4lloa/iNnO7MmSjq"
+     target="_blank">
+     DOAR COM PIX
+  </a>
+
+  <div class="qrcode-area">
+    <p>Escaneie o QR Code:</p>
+    <div id="qrcode"></div>
+
+    <textarea id="pixTexto" readonly>
+00020126710014BR.GOV.BCB.PIX0114+55619997134370231As trilhas agradecem pela ajuda5204000053039865802BR5921Raniel Mourao de Melo6009SAO PAULO61080540900062160512NUiNnO7MmSjq630419AD
+    </textarea>
+
+    <button onclick="copiarPix()">Copiar código Pix</button>
+  </div>
+
+</section>
+
+<footer>© CBT — Cerrado Bike Trilhas</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+const pixCode = `00020126710014BR.GOV.BCB.PIX0114+55619997134370231As trilhas agradecem pela ajuda5204000053039865802BR5921Raniel Mourao de Melo6009SAO PAULO61080540900062160512NUiNnO7MmSjq630419AD`;
+
+new QRCode(document.getElementById("qrcode"), {
+  text: pixCode,
+  width: 200,
+  height: 200
+});
+
+function copiarPix() {
+  const campo = document.getElementById("pixTexto");
+  campo.select();
+  document.execCommand("copy");
+  alert("Código Pix copiado!");
+}
+</script>
+
+</body>
+</html>

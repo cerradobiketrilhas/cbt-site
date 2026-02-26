@@ -573,7 +573,9 @@ a {
 }
 
 .qrcode-box {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
   margin-inline: auto;
   background: #ffffff;

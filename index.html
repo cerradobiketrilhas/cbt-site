@@ -8,6 +8,7 @@
 </head>
 
 <body>
+  <div id="loader"><div class="wheel"></div></div>
   <header class="site-header">
     <nav class="nav" aria-label="Navegação principal">
       <a href="#inicio" class="nav-brand" aria-label="Voltar para o início">
@@ -21,6 +22,7 @@
       </a>
 
       <button class="nav-toggle" type="button" aria-label="Alternar navegação" aria-expanded="false">
+        <span class="nav-toggle-line"></span>
         <span class="nav-toggle-line"></span>
         <span class="nav-toggle-line"></span>
       </button>
@@ -39,14 +41,18 @@
 
   <main>
     <section id="inicio" class="section section--hero" data-section-id="inicio">
+      <!-- video background (replace src with real footage) -->
+      <video class="hero-video" autoplay muted loop playsinline>
+        <source src="img/hero.mp4" type="video/mp4">
+      </video>
       <div class="section-inner section-inner--hero">
-        <p class="eyebrow">Projeto voluntário de trilhas</p>
-        <h1>Cerrado Bike Trilhas</h1>
-        <p class="section-lead">
+        <p class="eyebrow fade-up">Projeto voluntário de trilhas</p>
+        <h1 class="fade-up">Cerrado Bike Trilhas</h1>
+        <p class="section-lead fade-up">
           Complexo de trilhas em meio ao Cerrado, mantido por pessoas que acreditam em esporte,
           natureza e comunidade.
         </p>
-        <div class="hero-actions">
+        <div class="hero-actions fade-up">
           <a href="#doacoes" class="btn btn-primary" data-section-target="doacoes">Apoiar o projeto</a>
           <a href="#sobre" class="btn btn-ghost" data-section-target="sobre">Conhecer as trilhas</a>
         </div>
@@ -54,7 +60,7 @@
     </section>
 
     <section id="sobre" class="section section--content" data-section-id="sobre">
-      <div class="section-inner">
+      <div class="section-inner fade-up">
         <header class="section-header">
           <p class="eyebrow">Sobre o projeto</p>
           <h2>Trilhas, mountain bike e preservação do Cerrado</h2>
@@ -66,7 +72,7 @@
 
         <div class="content-grid">
           <div class="content-row">
-            <div class="content-text">
+            <div class="content-text fade-up">
               <h3>Trilhas para diferentes níveis e objetivos</h3>
               <p>
                 As trilhas do CBT foram desenhadas para atender desde quem está dando as primeiras pedaladas até atletas
@@ -84,7 +90,7 @@
           </div>
 
           <div class="content-row content-row--reverse">
-            <div class="content-text">
+            <div class="content-text fade-up">
               <h3>Mountain bike em contato direto com o Cerrado</h3>
               <p>
                 O mountain bike no CBT é uma forma de viver o Cerrado em sua essência. Subidas técnicas, trechos de fluxo,
@@ -102,7 +108,7 @@
           </div>
 
           <div class="content-row">
-            <div class="content-text">
+            <div class="content-text fade-up">
               <h3>Preservação ambiental como princípio de projeto</h3>
               <p>
                 Cada metro de trilha é pensado para reduzir erosão, respeitar áreas sensíveis e conviver em harmonia com o
@@ -120,7 +126,7 @@
           </div>
 
           <div class="content-row content-row--reverse">
-            <div class="content-text">
+            <div class="content-text fade-up">
               <h3>Comunidade, voluntariado e construção coletiva</h3>
               <p>
                 O CBT é fruto de uma comunidade que doa tempo, conhecimento e energia. Os mutirões de manutenção,
@@ -138,7 +144,7 @@
           </div>
 
           <div class="content-row">
-            <div class="content-text">
+            <div class="content-text fade-up">
               <h3>Esporte, saúde e bem-estar no dia a dia</h3>
               <p>
                 Mais do que performance, as trilhas são um convite à qualidade de vida. O ambiente ao ar livre, a
@@ -150,7 +156,7 @@
                 que incentiva a constância, a evolução gradual e o prazer em se movimentar.
               </p>
             </div>
-            <div class="content-media">
+            <div class="content-media fade-up">
               <div class="media-placeholder">Imagem ou Vídeo</div>
             </div>
           </div>
@@ -158,9 +164,9 @@
       </div>
     </section>
 
-    <section id="localizacao" class="section section--content" data-section-id="localizacao">
+    <section id="localizacao" class="section section--content parallax" data-section-id="localizacao" style="background-image:url('img/local-bg.jpg');">
       <div class="section-inner">
-        <header class="section-header">
+        <header class="section-header fade-up">
           <p class="eyebrow">Localização</p>
           <h2>Onde estão as trilhas</h2>
           <p class="section-lead">

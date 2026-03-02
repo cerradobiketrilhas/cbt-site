@@ -1,9 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* loader */
+  const loader = document.getElementById('loader');
+  if (loader) {
+    window.addEventListener('load', () => {
+      loader.classList.add('loaded');
+      loader.addEventListener('transitionend', () => loader.remove());
+    });
+  }
+
   const header = document.querySelector(".site-header");
   const navMenu = document.querySelector(".nav-menu");
   const navToggle = document.querySelector(".nav-toggle");
   const navLinks = Array.from(document.querySelectorAll(".nav-link"));
   const sections = Array.from(document.querySelectorAll("[data-section-id]"));
+
+  /* custom cursor */
+  const cursor = document.body;
+  document.addEventListener('mousemove', (e) => {
+    document.body.style.setProperty('--cursor-x', e.clientX + 'px');
+    document.body.style.setProperty('--cursor-y', e.clientY + 'px');
+  });
+
 
   function getHeaderHeight() {
     return header ? header.offsetHeight : 0;
@@ -14,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     navToggle.addEventListener("click", () => {
       const isOpen = navMenu.classList.toggle("nav-menu--open");
       navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      navToggle.classList.toggle('active', isOpen);
     });
 
     navMenu.addEventListener("click", (event) => {
@@ -22,6 +40,19 @@ document.addEventListener("DOMContentLoaded", () => {
       navMenu.classList.remove("nav-menu--open");
       navToggle.setAttribute("aria-expanded", "false");
     });
+  }
+
+  /* header transparency on scroll */
+  if (header) {
+    const toggleHeader = () => {
+      if (window.pageYOffset > 60) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', toggleHeader);
+    toggleHeader();
   }
 
   /* ===== INTERSECTION OBSERVER PARA SEÇÕES E MENU ATIVO ===== */
@@ -138,6 +169,31 @@ document.addEventListener("DOMContentLoaded", () => {
         setActiveSection(firstId);
       }
     }
+  }
+
+  /* reveal fade-up elements */
+  const fadeElems = document.querySelectorAll('.fade-up');
+  if (fadeElems.length && 'IntersectionObserver' in window) {
+    const fadeObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    fadeElems.forEach((el) => fadeObs.observe(el));
+  }
+
+  /* parallax backgrounds */
+  const parallaxEls = document.querySelectorAll('.parallax');
+  if (parallaxEls.length) {
+    window.addEventListener('scroll', () => {
+      const scroll = window.pageYOffset;
+      parallaxEls.forEach((el) => {
+        el.style.backgroundPositionY = `${scroll * 0.5}px`;
+      });
+    });
   }
 
   /* ===== DOAÇÃO / BARRA DE PROGRESSO ===== */

@@ -105,6 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   if ("IntersectionObserver" in window && sections.length > 0) {
+    const headerOffsetForObserver = getHeaderHeight() + 16;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const currentScrollY = window.pageYOffset;
@@ -122,7 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       },
       {
-        threshold: 0.35,
+        threshold: 0.25,
+        rootMargin: `-${headerOffsetForObserver}px 0px 0px 0px`,
       }
     );
 

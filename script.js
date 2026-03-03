@@ -21,26 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.setProperty('--cursor-y', e.clientY + 'px');
   });
 
-  /* ===== ANIMAÇÃO FADE-UP ===== */
-  if ("IntersectionObserver" in window) {
-    const fadeUpElements = document.querySelectorAll('.fade-up');
-    const fadeUpObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          fadeUpObserver.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
-
-    fadeUpElements.forEach((el) => {
-      fadeUpObserver.observe(el);
-    });
-  }
-
 
   function getHeaderHeight() {
     return header ? header.offsetHeight : 0;

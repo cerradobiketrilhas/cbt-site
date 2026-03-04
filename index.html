@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <title>CBT - Cerrado Bike Trilhas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <script>
+    (function () {
+      const version = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = `style.css?v=${version}`;
+      document.head.appendChild(stylesheet);
+    })();
+  </script>
 </head>
 
 <body>
@@ -369,6 +377,14 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-  <script src="script.js" defer></script>
+  <script>
+    (function () {
+      const version = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const appScript = document.createElement("script");
+      appScript.src = `script.js?v=${version}`;
+      appScript.async = false;
+      document.body.appendChild(appScript);
+    })();
+  </script>
 </body>
 </html>

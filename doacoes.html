@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Doações - CBT</title>
-  <link rel="stylesheet" href="style.css">
+  <script>
+    (function () {
+      const version = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = `style.css?v=${version}`;
+      document.head.appendChild(stylesheet);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 

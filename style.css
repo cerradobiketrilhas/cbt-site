@@ -334,6 +334,7 @@ a {
   color: var(--color-gray-light);
   max-width: 680px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .hero-actions .btn {

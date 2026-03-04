@@ -1,11 +1,17 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initSite() {
   /* loader */
   const loader = document.getElementById('loader');
   if (loader) {
-    window.addEventListener('load', () => {
+    const hideLoader = () => {
       loader.classList.add('loaded');
       loader.addEventListener('transitionend', () => loader.remove());
-    });
+    };
+
+    if (document.readyState === 'complete') {
+      hideLoader();
+    } else {
+      window.addEventListener('load', hideLoader, { once: true });
+    }
   }
 
   const header = document.querySelector(".site-header");
@@ -259,4 +265,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (pixCopyButton) {
     pixCopyButton.addEventListener("click", copiarPix);
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initSite, { once: true });
+} else {
+  initSite();
+}

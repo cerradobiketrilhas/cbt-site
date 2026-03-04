@@ -347,10 +347,20 @@ a {
 
 .section--hero .section-lead {
   font-size: 1.1rem;
-  color: var(--color-gray-light);
+  color: var(--color-muted);
   max-width: 680px;
-  margin: 0 auto;
+  margin: 0 auto 18px;
+  line-height: 1.75;
   text-align: center;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 6px;
 }
 
 .hero-actions .btn {
@@ -1100,7 +1110,7 @@ a {
 
   .hero-actions {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 }
 

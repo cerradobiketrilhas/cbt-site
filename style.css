@@ -308,6 +308,16 @@ a {
   z-index: 0;
 }
 
+.section--hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('img/bg-lines.svg') center/cover no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* video fallback ideal: user can replace with video element */
 .section--hero video.hero-video {
   position: absolute;
@@ -321,7 +331,7 @@ a {
 }
 
 .section--hero .section-inner {
-  z-index: 1;
+  z-index: 2;
   max-width: 900px;
   padding: 0 24px;
 }

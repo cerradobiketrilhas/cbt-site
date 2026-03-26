@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CBT - Cerrado Bike Trilhas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>
+    (function () {
+      const version = Date.now();
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = `style.css?v=${version}`;
+      document.head.appendChild(stylesheet);
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="loader"><div class="wheel"></div></div>
+  <header class="site-header">
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="#inicio" class="nav-brand" aria-label="Voltar para o início">
+        <div class="logo">
+          <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas">
+        </div>
+        <span class="nav-brand-text">
+          <span class="nav-brand-title">Cerrado Bike Trilhas</span>
+          <span class="nav-brand-subtitle">Luziânia • GO</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-label="Alternar navegação" aria-expanded="false">
+        <span class="nav-toggle-line"></span>
+        <span class="nav-toggle-line"></span>
+        <span class="nav-toggle-line"></span>
+      </button>
+
+      <div class="nav-menu" id="primary-menu">
+        <a href="#inicio" class="nav-link" data-section-target="inicio">Início</a>
+        <a href="#sobre" class="nav-link" data-section-target="sobre">Sobre</a>
+        <a href="#localizacao" class="nav-link" data-section-target="localizacao">Localização</a>
+        <a href="#doacoes" class="nav-link" data-section-target="doacoes">Doações</a>
+        <a href="#como-ajudar" class="nav-link" data-section-target="como-ajudar">Como Ajudar</a>
+        <a href="#transparencia" class="nav-link" data-section-target="transparencia">Transparência</a>
+        <a href="#contato" class="nav-link" data-section-target="contato">Contato</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="section section--hero" data-section-id="inicio">
+      <!-- video background (replace src with real footage) -->
+      <video class="hero-video" autoplay muted loop playsinline>
+        <source src="img/hero.mp4" type="video/mp4">
+      </video>
+      <div class="section-inner section-inner--hero">
+        <p class="eyebrow fade-up">Projeto voluntário de trilhas</p>
+        <h1 class="fade-up">Cerrado Bike Trilhas</h1>
+        <p class="section-lead fade-up">
+          Complexo de trilhas em meio ao Cerrado, mantido por pessoas que acreditam em esporte,
+          natureza e comunidade.
+        </p>
+        <div class="hero-actions fade-up">
+          <a href="#doacoes" class="btn btn-primary" data-section-target="doacoes">Apoiar o projeto</a>
+          <a href="#sobre" class="btn btn-ghost" data-section-target="sobre">Conhecer as trilhas</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre" class="section section--content" data-section-id="sobre">
+      <div class="section-inner fade-up">
+        <header class="section-header">
+          <p class="eyebrow">Sobre o projeto</p>
+          <h2>Trilhas, mountain bike e preservação do Cerrado</h2>
+          <p class="section-lead">
+            O Cerrado Bike Trilhas organiza, sinaliza e cuida de um complexo de trilhas pensado para quem pedala,
+            corre ou simplesmente quer caminhar em segurança, sempre com respeito ao meio ambiente.
+          </p>
+        </header>
+
+        <div class="content-grid">
+          <div class="content-row">
+            <div class="content-text fade-up">
+              <h3>Trilhas para diferentes níveis e objetivos</h3>
+              <p>
+                As trilhas do CBT foram desenhadas para atender desde quem está dando as primeiras pedaladas até atletas
+                experientes de mountain bike. São percursos com variações de distância, altimetria e dificuldade técnica,
+                permitindo que cada pessoa escolha a experiência mais adequada ao seu momento.
+              </p>
+              <p>
+                A sinalização clara, os pontos de referência e o cuidado constante com o terreno tornam o uso mais seguro,
+                previsível e agradável para quem vem em solo, em grupo ou em família.
+              </p>
+            </div>
+            <div class="content-media">
+              <div class="media-placeholder">Imagem ou Vídeo</div>
+            </div>
+          </div>
+
+          <div class="content-row content-row--reverse">
+            <div class="content-text fade-up">
+              <h3>Mountain bike em contato direto com o Cerrado</h3>
+              <p>
+                O mountain bike no CBT é uma forma de viver o Cerrado em sua essência. Subidas técnicas, trechos de fluxo,
+                single tracks e áreas de vista aberta compõem um cenário que desafia o corpo e ao mesmo tempo convida
+                à contemplação da paisagem.
+              </p>
+              <p>
+                O desenho das trilhas busca equilibrar fluidez e desafio, com linhas pensadas para gerar sensação de
+                movimento, velocidade e progressão segura, sem abrir mão do cuidado com o solo e com a vegetação nativa.
+              </p>
+            </div>
+            <div class="content-media">
+              <div class="media-placeholder">Imagem ou Vídeo</div>
+            </div>
+          </div>
+
+          <div class="content-row">
+            <div class="content-text fade-up">
+              <h3>Preservação ambiental como princípio de projeto</h3>
+              <p>
+                Cada metro de trilha é pensado para reduzir erosão, respeitar áreas sensíveis e conviver em harmonia com o
+                bioma do Cerrado. Aberturas e manutenções são conduzidas por voluntários que conhecem o terreno e priorizam
+                soluções de baixo impacto.
+              </p>
+              <p>
+                O objetivo é que o uso esportivo das trilhas ajude a fortalecer o senso de pertencimento e responsabilidade
+                sobre o território, estimulando práticas de conservação e educação ambiental entre quem frequenta o espaço.
+              </p>
+            </div>
+            <div class="content-media">
+              <div class="media-placeholder">Imagem ou Vídeo</div>
+            </div>
+          </div>
+
+          <div class="content-row content-row--reverse">
+            <div class="content-text fade-up">
+              <h3>Comunidade, voluntariado e construção coletiva</h3>
+              <p>
+                O CBT é fruto de uma comunidade que doa tempo, conhecimento e energia. Os mutirões de manutenção,
+                as conversas de beira de trilha e a organização dos percursos são construídos de forma colaborativa,
+                aproximando ciclistas, corredores, moradores locais e apoiadores.
+              </p>
+              <p>
+                Ser voluntário aqui significa fazer parte de algo maior: um espaço que acolhe pessoas, fortalece vínculos
+                e mostra, na prática, o poder da ação coletiva em prol do esporte e da natureza.
+              </p>
+            </div>
+            <div class="content-media">
+              <div class="media-placeholder">Imagem ou Vídeo</div>
+            </div>
+          </div>
+
+          <div class="content-row">
+            <div class="content-text fade-up">
+              <h3>Esporte, saúde e bem-estar no dia a dia</h3>
+              <p>
+                Mais do que performance, as trilhas são um convite à qualidade de vida. O ambiente ao ar livre, a
+                variação de terreno e o contato com o Cerrado contribuem para saúde física e mental, reforçando a
+                importância de criar espaços seguros para a prática esportiva regular.
+              </p>
+              <p>
+                O CBT busca ser um ponto de encontro para quem deseja incorporar o esporte à rotina, com uma estrutura
+                que incentiva a constância, a evolução gradual e o prazer em se movimentar.
+              </p>
+            </div>
+            <div class="content-media fade-up">
+              <div class="media-placeholder">Imagem ou Vídeo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="localizacao" class="section section--content parallax" data-section-id="localizacao" style="background-image:url('img/local-bg.jpg');">
+      <div class="section-inner">
+        <header class="section-header fade-up">
+          <p class="eyebrow">Localização</p>
+          <h2>Onde estão as trilhas</h2>
+          <p class="section-lead">
+            O complexo Cerrado Bike Trilhas está localizado em Luziânia, Goiás, em uma área que preserva o bioma
+            do Cerrado e oferece fácil acesso para quem vem do entorno.
+          </p>
+        </header>
+
+        <section class="box box--wide" aria-label="Mapa e instruções de chegada">
+          <div class="localizacao-card">
+            <div class="local-info">
+              <h3>Como chegar</h3>
+              <p>
+                As trilhas ficam em uma região de fácil acesso, com chegada por via terrestre. Ao abrir o mapa abaixo,
+                você encontra o ponto de referência oficial do projeto para planejar seu deslocamento com segurança.
+              </p>
+              <p>
+                Sempre que possível, combine caronas, venha em grupo e respeite os moradores e propriedades do entorno.
+              </p>
+
+              <a class="btn-mapa"
+                 href="https://maps.app.goo.gl/fiLE6h5TsF5CgJbx6"
+                 target="_blank" rel="noopener">
+                 Abrir no mapa
+              </a>
+            </div>
+
+            <div class="mapa" aria-hidden="false">
+              <iframe
+                src="https://maps.google.com/maps?q=-16.253,-47.950&z=14&output=embed"
+                loading="lazy"
+                allowfullscreen
+                title="Mapa de localização do Cerrado Bike Trilhas">
+              </iframe>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="doacoes" class="section section--content" data-section-id="doacoes">
+      <div class="section-inner">
+        <header class="section-header">
+          <p class="eyebrow">Doações</p>
+          <h2>Apoie a manutenção das trilhas</h2>
+          <p class="section-lead">
+            O CBT é um projeto voluntário e depende diretamente do apoio financeiro da comunidade para manter as
+            trilhas seguras, sinalizadas e bem cuidadas.
+          </p>
+        </header>
+
+        <section class="box" aria-label="Informações de doação">
+          <h3>Contribua com o projeto</h3>
+          <p class="sub">Cada doação ajuda a manter as trilhas abertas, estruturadas e acessíveis.</p>
+
+          <div class="meta-texto">
+            <span>Meta mensal: R$ 5.000</span>
+            <span>Arrecadado: <strong data-donation-value>R$ 0,00</strong></span>
+          </div>
+
+          <div class="barra">
+            <div class="progresso" data-donation-progress>0%</div>
+          </div>
+
+          <a class="btn"
+             href="https://nubank.com.br/pagar/4lloa/iNnO7MmSjq"
+             target="_blank" rel="noopener">
+             Doar com Pix
+          </a>
+
+          <div class="qrcode-area">
+            <p>Prefere escanear o QR Code ou copiar o código Pix?</p>
+            <div id="qrcode" class="qrcode-box"></div>
+
+            <textarea id="pixTexto" readonly>
+00020126710014BR.GOV.BCB.PIX0114+55619997134370231As trilhas agradecem pela ajuda5204000053039865802BR5921Raniel Mourao de Melo6009SAO PAULO61080540900062160512NUiNnO7MmSjq630419AD
+            </textarea>
+
+            <button type="button" class="btn-ghost btn-ghost--compact" data-pix-copy>Copiar código Pix</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="como-ajudar" class="section section--content" data-section-id="como-ajudar">
+      <div class="section-inner">
+        <header class="section-header">
+          <p class="eyebrow">Como ajudar</p>
+          <h2>Formas de se envolver com o CBT</h2>
+          <p class="section-lead">
+            Você pode apoiar o projeto financeiramente, com trabalho voluntário ou ajudando a divulgar
+            as trilhas e a causa do Cerrado.
+          </p>
+        </header>
+
+        <section class="box" aria-label="Formas de colaboração">
+          <div class="ajuda-grid">
+            <article class="ajuda-card">
+              <h3>Doação financeira</h3>
+              <p>
+                Sua contribuição viabiliza a compra de ferramentas, placas de sinalização, insumos para manutenção
+                do solo e pequenas melhorias estruturais nas trilhas.
+              </p>
+              <a href="#doacoes" class="btn-ajuda" data-section-target="doacoes">Fazer doação</a>
+            </article>
+
+            <article class="ajuda-card destaque">
+              <h3>Trabalho voluntário</h3>
+              <p>
+                Se você não pode ajudar financeiramente, seu tempo e sua disposição já fazem uma enorme diferença.
+              </p>
+              <p>
+                Participar dos mutirões ajuda a manter as trilhas seguras, limpas e bem sinalizadas, além de fortalecer
+                o vínculo entre quem usa e cuida do espaço.
+              </p>
+              <a href="#contato" class="btn-ajuda" data-section-target="contato">Quero ser voluntário</a>
+            </article>
+
+            <article class="ajuda-card">
+              <h3>Divulgação e articulação</h3>
+              <p>
+                Compartilhe o projeto com amigos, grupos de pedal, assessorias esportivas e empresas locais. Quanto mais
+                pessoas conhecerem o CBT, maior o potencial de apoio e impacto positivo.
+              </p>
+              <a href="https://www.instagram.com/cerradobiketrilhas"
+                 target="_blank" rel="noopener"
+                 class="btn-ajuda">
+                Divulgar
+              </a>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="transparencia" class="section section--content" data-section-id="transparencia">
+      <div class="section-inner">
+        <header class="section-header">
+          <p class="eyebrow">Transparência</p>
+          <h2>Como os recursos são utilizados</h2>
+          <p class="section-lead">
+            O compromisso com a transparência é central para o CBT. Os recursos doados são aplicados diretamente
+            na manutenção e na melhoria das trilhas.
+          </p>
+        </header>
+
+        <section class="box" aria-label="Resumo de utilização de recursos">
+          <div class="transparencia-lista">
+            <div class="transparencia-item">
+              <span class="transparencia-label">Manutenção de trilhas</span>
+              <span class="transparencia-valor">R$ 900</span>
+            </div>
+            <div class="transparencia-item">
+              <span class="transparencia-label">Equipamentos e ferramentas</span>
+              <span class="transparencia-valor">R$ 600</span>
+            </div>
+            <div class="transparencia-item">
+              <span class="transparencia-label">Sinalização e comunicação visual</span>
+              <span class="transparencia-valor">R$ 350</span>
+            </div>
+          </div>
+          <p class="transparencia-note">
+            Esses valores são ilustrativos e podem ser atualizados conforme novos relatórios forem consolidados.
+          </p>
+        </section>
+      </div>
+    </section>
+
+    <section id="contato" class="section section--content" data-section-id="contato">
+      <div class="section-inner">
+        <header class="section-header">
+          <p class="eyebrow">Contato</p>
+          <h2>Fale com o Cerrado Bike Trilhas</h2>
+          <p class="section-lead">
+            Dúvidas, sugestões, interesse em voluntariado ou parcerias institucionais: entre em contato pelos canais
+            oficiais do projeto.
+          </p>
+        </header>
+
+        <section class="box box--center" aria-label="Canais oficiais de contato">
+          <p class="sub">
+            O Instagram é hoje o principal canal de atualização sobre trilhas, mutirões e novidades do projeto.
+          </p>
+
+          <a class="btn-insta"
+             href="https://www.instagram.com/cerradobiketrilhas"
+             target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" class="insta-icon" aria-hidden="true" focusable="false">
+              <path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5.2A4.8 4.8 0 1016.8 12 4.8 4.8 0 0012 7.2zm0 7.9A3.1 3.1 0 1115.1 12 3.1 3.1 0 0112 15.1zm4.9-8.6a1.1 1.1 0 11-1.1-1.1 1.1 1.1 0 011.1 1.1z"/>
+            </svg>
+            <span>@cerradobiketrilhas</span>
+          </a>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Cerrado Bike Trilhas — Projeto voluntário, sem fins lucrativos.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script>
+    (function () {
+      const version = Date.now();
+      const appScript = document.createElement("script");
+      appScript.src = `script.js?v=${version}`;
+      appScript.async = false;
+      document.body.appendChild(appScript);
+    })();
+  </script>
+</body>
+</html>

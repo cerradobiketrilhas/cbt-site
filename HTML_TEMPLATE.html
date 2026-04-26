@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="CBT - Cerrado Bike Trilhas - Complexo de trilhas em meio ao Cerrado, mantido por voluntarios que acreditam em esporte, natureza e comunidade.">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone-no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cerradobiketrilhas.com/">
+  <meta property="og:title" content="CBT - Cerrado Bike Trilhas">
+  <meta property="og:description" content="Trilhas em meio ao Cerrado, mantidas por voluntarios que acreditam em esporte, natureza e comunidade.">
+  <meta property="og:image" content="img/logo-cbt.jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CBT - Cerrado Bike Trilhas">
+  <meta name="twitter:description" content="Trilhas em meio ao Cerrado">
+  <meta name="twitter:image" content="img/logo-cbt.jpeg">
+  
+  <title>CBT - Cerrado Bike Trilhas</title>
+  
+  <!-- Preload critical fonts for better LCP -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" as="style">
+  
+  <!-- Stylesheet injection for cache busting -->
+  <script>
+    (function () {
+      const version = Date.now();
+      const stylesheet = document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = `style.css?v=${version}`;
+      document.head.appendChild(stylesheet);
+    })();
+  </script>
+  
+  <!-- Config loader - deve estar no head para estar disponivel cedo -->
+  <script src="config.js"></script>
+</head>
+
+<body>
+  <div id="loader"><div class="wheel"></div></div>
+  
+  <!-- Header navigation will go here -->
+  <!-- Main content sections will go here -->
+  <!-- Footer will go here -->
+  
+  <!-- QRCode library (para pagina de doacoes) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  
+  <!-- Main optimized app script with cache busting -->
+  <script>
+    (function () {
+      const version = Date.now();
+      const appScript = document.createElement("script");
+      appScript.src = `script-optimized.js?v=${version}`;
+      appScript.async = false;
+      document.body.appendChild(appScript);
+    })();
+  </script>
+  
+  <!-- Service Worker Registration for offline support -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('[SW] Registered:', reg))
+          .catch(err => console.error('[SW] Registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

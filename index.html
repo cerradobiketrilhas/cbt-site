@@ -2,15 +2,30 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>CBT - Cerrado Bike Trilhas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Cerrado Bike Trilhas - Complexo de trilhas em meio ao Cerrado, mantido por voluntários que acreditam em esporte, natureza e comunidade.">
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="telephone-no">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cerradobiketrilhas.com/">
+  <meta property="og:title" content="CBT - Cerrado Bike Trilhas">
+  <meta property="og:description" content="Trilhas em meio ao Cerrado, mantidas por voluntários.">
+  <meta property="og:image" content="img/logo-cbt.jpeg">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <title>CBT - Cerrado Bike Trilhas</title>
+  
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" as="style">
+  
+  <!-- Inline critical CSS (style) -->
   <script>
     (function () {
       const version = Date.now();
@@ -20,6 +35,9 @@
       document.head.appendChild(stylesheet);
     })();
   </script>
+  
+  <!-- Config and Service Worker -->
+  <script async src="config.js?v=" + Date.now()"></script>
 </head>
 
 <body>
@@ -369,14 +387,25 @@
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  
   <script>
     (function () {
       const version = Date.now();
       const appScript = document.createElement("script");
-      appScript.src = `script.js?v=${version}`;
+      appScript.src = `script-optimized.js?v=${version}`;
       appScript.async = false;
       document.body.appendChild(appScript);
     })();
+  </script>
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('[SW] Registered'))
+          .catch(err => console.error('[SW] Registration failed:', err));
+      });
+    }
   </script>
 </body>
 </html>

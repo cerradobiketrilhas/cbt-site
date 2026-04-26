@@ -1,0 +1,19 @@
+{
+  "donation": {
+    "meta": 5000,
+    "arrecadado": 1850,
+    "pixCode": "00020126710014BR.GOV.BCB.PIX0114+55619997134370231As trilhas agradecem pela ajuda5204000053039865802BR5921Raniel Mourao de Melo6009SAO PAULO61080540900062160512NUiNnO7MmSjq630419AD",
+    "pixLink": "https://nubank.com.br/pagar/4lloa/iNnO7MmSjq"
+  },
+  "organization": {
+    "name": "Cerrado Bike Trilhas",
+    "location": "Luziânia • GO",
+    "instagram": "cerradobiketrilhas",
+    "instagramUrl": "https://www.instagram.com/cerradobiketrilhas"
+  },
+  "theme": {
+    "colorPrimary": "#22c55e",
+    "colorBlue": "#3b82f6",
+    "colorBlack": "#000000"
+  }
+}

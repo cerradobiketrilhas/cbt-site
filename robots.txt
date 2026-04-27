@@ -1,0 +1,21 @@
+# Permitir todos os bots
+User-agent: *
+Allow: /
+
+# Desabilitar Googlebot em admin
+User-agent: Googlebot
+Disallow: /admin/
+
+# Permitir todos em /img e /css
+Allow: /img/
+Allow: /style.css
+Allow: /*.js
+
+# Informação do sitemap
+Sitemap: https://cerradobiketrilhas.com/sitemap.xml
+
+# Crawl delay (opcional)
+Crawl-delay: 1
+
+# Tempo em cache de 1 dia
+Cache-Control: max-age=86400

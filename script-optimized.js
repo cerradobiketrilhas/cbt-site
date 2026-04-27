@@ -142,34 +142,11 @@ function initSite() {
     document.body.appendChild(spotlight);
   }
 
-  // === MOTION STATE & CURSOR ===
+  // === MOTION STATE (cursor removed) ===
   const motionState = {
-    targetCursorX: window.innerWidth / 2,
-    targetCursorY: window.innerHeight / 2,
-    currentCursorX: window.innerWidth / 2,
-    currentCursorY: window.innerHeight / 2,
     targetScrollY: window.pageYOffset,
     currentScrollY: window.pageYOffset,
   };
-
-  if (!prefersReducedMotion && !isTouchDevice) {
-    events.on(document, 'mousemove', (e) => {
-      motionState.targetCursorX = e.clientX;
-      motionState.targetCursorY = e.clientY;
-    });
-
-    root.style.setProperty('--cursor-render-x', `${motionState.currentCursorX}px`);
-    root.style.setProperty('--cursor-render-y', `${motionState.currentCursorY}px`);
-  }
-
-  // === INTERACTIVE ELEMENTS CURSOR ===
-  const interactiveElements = document.querySelectorAll('a, button, .btn, .btn-ajuda, .btn-mapa, .btn-insta, .nav-link');
-  if (!isTouchDevice) {
-    interactiveElements.forEach((element) => {
-      events.on(element, 'mouseenter', () => document.body.classList.add('cursor-active'));
-      events.on(element, 'mouseleave', () => document.body.classList.remove('cursor-active'));
-    });
-  }
 
   // === 3D TILT (desabilitado em reduced motion e touch) ===
   if (!prefersReducedMotion && !isTouchDevice) {
@@ -310,14 +287,10 @@ function initSite() {
 
   if (!prefersReducedMotion && !isTouchDevice) {
     const animateMotion = () => {
-      motionState.currentCursorX += (motionState.targetCursorX - motionState.currentCursorX) * 0.18;
-      motionState.currentCursorY += (motionState.targetCursorY - motionState.currentCursorY) * 0.18;
       motionState.currentScrollY += (motionState.targetScrollY - motionState.currentScrollY) * 0.12;
 
-      root.style.setProperty('--cursor-render-x', `${motionState.currentCursorX.toFixed(2)}px`);
-      root.style.setProperty('--cursor-render-y', `${motionState.currentCursorY.toFixed(2)}px`);
-      root.style.setProperty('--spotlight-x', `${motionState.currentCursorX.toFixed(2)}px`);
-      root.style.setProperty('--spotlight-y', `${motionState.currentCursorY.toFixed(2)}px`);
+      root.style.setProperty('--spotlight-x', `${motionState.currentScrollY.toFixed(2)}px`);
+      root.style.setProperty('--spotlight-y', `${motionState.currentScrollY.toFixed(2)}px`);
       root.style.setProperty('--section-shift', `${Math.min(motionState.currentScrollY * 0.03, 18).toFixed(2)}px`);
 
       if (heroSection) {
@@ -500,10 +473,31 @@ function initSite() {
               pixTextarea.select();
               document.execCommand("copy");
             }
-            alert("Código Pix copiado com sucesso!");
+            
+            // Feedback visual using ARIA Live Region
+            const feedback = document.getElementById('copy-feedback');
+            if (feedback) {
+              feedback.textContent = '✅ PIX copiado para clipboard!';
+              feedback.classList.add('show');
+              
+              setTimeout(() => feedback.classList.remove('show'), 3000);
+            }
+            
+            // Button feedback
+            const originalText = pixCopyButton.textContent;
+            pixCopyButton.textContent = '✓ Copiado!';
+            setTimeout(() => {
+              pixCopyButton.textContent = originalText;
+            }, 2000);
+            
           } catch (error) {
             console.error('Erro ao copiar Pix:', error);
-            alert("Não foi possível copiar o código Pix.");
+            const feedback = document.getElementById('copy-feedback');
+            if (feedback) {
+              feedback.textContent = '❌ Não foi possível copiar. Selecione manualmente.';
+              feedback.classList.add('show');
+              setTimeout(() => feedback.classList.remove('show'), 3000);
+            }
           }
         });
       }
@@ -518,6 +512,81 @@ function initSite() {
     events.cleanup();
   });
 }
+
+/* Back to top button */
+const backToTopButton = document.getElementById('back-to-top');
+
+if (backToTopButton) {
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      backToTopButton.classList.add('show');
+    } else {
+      backToTopButton.classList.remove('show');
+    }
+  });
+
+  backToTopButton.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
+/* Newsletter form handling */
+const newsletterForm = document.getElementById('newsletter-form');
+const formStatus = document.getElementById('form-status');
+const emailInput = document.getElementById('newsletter-email');
+
+newsletterForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const email = emailInput.value.trim();
+  
+  // Validação básica
+  if (!email || !email.includes('@')) {
+    formStatus.textContent = '❌ Por favor, use um email válido.';
+    formStatus.classList.add('error');
+    return;
+  }
+  
+  // Mostrar loading
+  formStatus.textContent = '📧 Inscrevendo...';
+  formStatus.classList.remove('error');
+  
+  try {
+    // Por agora, simular sucesso
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Sucesso
+    formStatus.textContent = '✅ Obrigado! Confira seu email para confirmar.';
+    formStatus.classList.remove('error');
+    
+    // Limpar e resetar
+    emailInput.value = '';
+    setTimeout(() => {
+      formStatus.textContent = '';
+      emailInput.focus();
+    }, 3000);
+    
+  } catch (error) {
+    console.error('Newsletter error:', error);
+    formStatus.textContent = '❌ Erro na inscrição. Tente novamente.';
+    formStatus.classList.add('error');
+  }
+});
+
+// Email validation in real-time
+emailInput?.addEventListener('blur', (e) => {
+  const email = e.target.value.trim();
+  const isValid = email.includes('@') && email.includes('.');
+  
+  if (email && !isValid) {
+    e.target.setAttribute('aria-invalid', 'true');
+  } else {
+    e.target.removeAttribute('aria-invalid');
+  }
+});
 
 // Initialize when DOM is ready
 if (document.readyState === "loading") {

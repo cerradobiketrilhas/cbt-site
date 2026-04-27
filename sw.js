@@ -17,6 +17,7 @@ const CACHE_ASSETS = [
   '/script.js',
   '/config.js',
   '/config.json',
+  '/img/logo-cbt.webp',
   '/img/logo-cbt.jpeg',
   '/img/bg-lines.svg'
 ];

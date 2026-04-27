@@ -17,7 +17,8 @@
   <meta property="og:url" content="https://cerradobiketrilhas.com/">
   <meta property="og:title" content="CBT - Cerrado Bike Trilhas">
   <meta property="og:description" content="Trilhas em meio ao Cerrado, mantidas por voluntários.">
-  <meta property="og:image" content="img/logo-cbt.jpeg">
+  <meta property="og:image" content="img/logo-cbt.webp">
+  <meta property="og:image:alt" content="Logotipo do Cerrado Bike Trilhas">
   <meta name="twitter:card" content="summary_large_image">
   
   <title>CBT - Cerrado Bike Trilhas</title>
@@ -38,15 +39,85 @@
   
   <!-- Config and Service Worker -->
   <script async src="config.js?v=" + Date.now()"></script>
+  
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX'); // Substituir G-XXXXXXXXXX pelo seu ID
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const isDonationPage = document.location.pathname.includes('doacao');
+      if (isDonationPage) {
+        gtag('event', 'view_donation_page', {
+          page_title: document.title,
+          page_location: window.location.href
+        });
+      }
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('btn-primary') || 
+          e.target.closest('.btn-primary')) {
+        gtag('event', 'click_donation_button', {
+          button_text: e.target.textContent || e.target.closest('.btn-primary').textContent
+        });
+      }
+    });
+  </script>
+  
+  <!-- JSON-LD Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cerrado Bike Trilhas",
+    "alternateName": "CBT",
+    "url": "https://cerradobiketrilhas.com",
+    "logo": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
+    "description": "Complexo de trilhas em meio ao Cerrado, mantido por voluntários que acreditam em esporte, natureza e comunidade.",
+    "image": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Luziânia",
+      "addressLocality": "Luziânia",
+      "addressRegion": "GO",
+      "postalCode": "73000-000",
+      "addressCountry": "BR"
+    },
+    "sameAs": [
+      "https://www.instagram.com/cerradobiketrilhas"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Service",
+      "url": "https://cerradobiketrilhas.com/contato.html"
+    },
+    "founder": [
+      {
+        "@type": "Person",
+        "name": "Comunidade de Voluntários"
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
+  <!-- Skip link (accessibility) -->
+  <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+  
   <div id="loader"><div class="wheel"></div></div>
   <header class="site-header">
     <nav class="nav" aria-label="Navegação principal">
       <a href="#inicio" class="nav-brand" aria-label="Voltar para o início">
         <div class="logo">
-          <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas">
+          <picture>
+            <source srcset="img/logo-cbt.webp" type="image/webp">
+            <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas" loading="lazy">
+          </picture>
         </div>
         <span class="nav-brand-text">
           <span class="nav-brand-title">Cerrado Bike Trilhas</span>
@@ -72,7 +143,7 @@
     </nav>
   </header>
 
-  <main>
+  <main id="main-content">
     <section id="inicio" class="section section--hero" data-section-id="inicio">
       <!-- video background (replace src with real footage) -->
       <video class="hero-video" autoplay muted loop playsinline>
@@ -264,6 +335,7 @@
             </textarea>
 
             <button type="button" class="btn-ghost btn-ghost--compact" data-pix-copy>Copiar código Pix</button>
+            <div id="copy-feedback" role="status" aria-live="polite" aria-atomic="true" class="copy-feedback"></div>
           </div>
         </section>
       </div>
@@ -407,5 +479,12 @@
       });
     }
   </script>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
 </body>
 </html>

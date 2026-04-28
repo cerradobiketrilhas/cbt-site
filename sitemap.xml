@@ -6,7 +6,7 @@
   <!-- Homepage (Prioridade máxima) -->
   <url>
     <loc>https://cerradobiketrilhas.com/index.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <mobile:mobile/>
@@ -19,7 +19,7 @@
   <!-- Doações (CTA importante) -->
   <url>
     <loc>https://cerradobiketrilhas.com/doacoes.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <mobile:mobile/>
@@ -28,7 +28,7 @@
   <!-- Sobre -->
   <url>
     <loc>https://cerradobiketrilhas.com/sobre.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <mobile:mobile/>
@@ -37,7 +37,7 @@
   <!-- Localização -->
   <url>
     <loc>https://cerradobiketrilhas.com/localizacao.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <mobile:mobile/>
@@ -46,7 +46,7 @@
   <!-- Como Ajudar -->
   <url>
     <loc>https://cerradobiketrilhas.com/ajudar.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <mobile:mobile/>
@@ -55,7 +55,7 @@
   <!-- Transparência -->
   <url>
     <loc>https://cerradobiketrilhas.com/transparencia.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <mobile:mobile/>
@@ -64,7 +64,7 @@
   <!-- Contato -->
   <url>
     <loc>https://cerradobiketrilhas.com/contato.html</loc>
-    <lastmod>2026-04-27T10:00:00Z</lastmod>
+    <lastmod>2026-04-28T14:30:00Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
     <mobile:mobile/>

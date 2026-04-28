@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>Como Ajudar - CBT</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Saiba como ajudar o Cerrado Bike Trilhas além de doações financeiras. Trabalho voluntário e divulgação.">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone-no">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cerradobiketrilhas.com/ajudar.html">
+  <meta property="og:title" content="Como Ajudar - CBT">
+  <meta property="og:description" content="Saiba como ajudar o Cerrado Bike Trilhas além de doações.">
+  <meta property="og:image" content="img/logo-cbt.webp">
+  <meta property="og:image:alt" content="Logotipo do Cerrado Bike Trilhas">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <title>Como Ajudar - CBT</title>
+
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" as="style">
+
+  <!-- Inline critical CSS (style) -->
   <script>
     (function () {
       const version = Date.now();
@@ -14,20 +36,67 @@
       document.head.appendChild(stylesheet);
     })();
   </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="format-detection" content="telephone=no">
+
+  <!-- Config and Service Worker -->
+  <script async src="config.js?v=" + Date.now()"></script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+
+    document.addEventListener('DOMContentLoaded', function() {
+      gtag('event', 'page_view', { 'page_path': window.location.pathname });
+    });
+  </script>
+
+  <!-- JSON-LD Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cerrado Bike Trilhas",
+    "alternateName": "CBT",
+    "url": "https://cerradobiketrilhas.com",
+    "logo": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
+    "description": "Complexo de trilhas em meio ao Cerrado, mantido por voluntários que acreditam em esporte, natureza e comunidade.",
+    "image": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Luziânia",
+      "addressLocality": "Luziânia",
+      "addressRegion": "GO",
+      "postalCode": "73000-000",
+      "addressCountry": "BR"
+    },
+    "sameAs": [
+      "https://www.instagram.com/cerradobiketrilhas"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Service",
+      "url": "https://cerradobiketrilhas.com/contato.html"
+    }
+  }
+  </script>
 </head>
 
 <body>
+  <!-- Skip link (accessibility) -->
+  <a href="#main-content" class="skip-link">Pular para conteúdo principal</a>
+
   <div id="loader"><div class="wheel"></div></div>
   <header class="site-header">
     <nav class="nav" aria-label="Navegação principal">
       <a href="index.html" class="nav-brand" aria-label="Voltar para o início">
         <div class="logo">
-          <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas">
+          <picture>
+            <source srcset="img/logo-cbt.webp" type="image/webp">
+            <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas" loading="lazy">
+          </picture>
         </div>
         <span class="nav-brand-text">
           <span class="nav-brand-title">Cerrado Bike Trilhas</span>
@@ -99,18 +168,34 @@
 </section>
   </main>
 
-  <footer class="site-footer">
-    © 2026 Cerrado Bike Trilhas — Todos os direitos reservados
-  </footer>
+  <footer class="site-footer">© CBT — Cerrado Bike Trilhas</footer>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
 
   <script>
     (function () {
       const version = Date.now();
       const appScript = document.createElement("script");
-      appScript.src = `script.js?v=${version}`;
+      appScript.src = `script-optimized.js?v=${version}`;
       appScript.async = false;
       document.body.appendChild(appScript);
     })();
+  </script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('[SW] Registered'))
+          .catch(err => console.error('[SW] Registration failed:', err));
+      });
+    }
   </script>
 
 </body>

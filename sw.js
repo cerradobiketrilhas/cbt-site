@@ -14,7 +14,7 @@ const CACHE_ASSETS = [
   '/transparencia.html',
   '/contato.html',
   '/style.css',
-  '/script.js',
+  '/script-optimized.js',
   '/config.js',
   '/config.json',
   '/img/logo-cbt.webp',

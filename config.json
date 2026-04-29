@@ -15,5 +15,35 @@
     "colorPrimary": "#22c55e",
     "colorBlue": "#3b82f6",
     "colorBlack": "#000000"
+  },
+  "event": {
+    "name": "2º Treino Cronometrado CBT",
+    "date": {
+      "start": "2026-07-11",
+      "end": "2026-07-12"
+    },
+    "location": {
+      "name": "Desafio Corguinhó II",
+      "city": "Luziânia",
+      "state": "GO"
+    },
+    "inscription": {
+      "price": 80,
+      "currency": "BRL",
+      "status": "open",
+      "limitedSpots": true,
+      "preferenceFirstEdition": true
+    },
+    "contacts": {
+      "leiteiro": "(61) 998384334",
+      "nathan": "(61) 994643396"
+    },
+    "categories": [
+      "Elite",
+      "Sport",
+      "Amador",
+      "Feminino",
+      "Master"
+    ]
   }
 }

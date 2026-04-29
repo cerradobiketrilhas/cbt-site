@@ -1,0 +1,19 @@
+{
+  "name": "cbt-site",
+  "version": "1.0.0",
+  "description": "Cerrado Bike Trilhas - Página de inscrição para eventos",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build"
+  },
+  "dependencies": {
+    "mercadopago": "^2.1.0",
+    "firebase": "^10.7.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "18.x"
+  }
+}

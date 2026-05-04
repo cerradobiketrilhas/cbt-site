@@ -14,12 +14,16 @@ function getEventUnitPrice() {
   return Number.isFinite(n) && n > 0 ? n : 5;
 }
 
-/** URL pública (sem barra final): back_urls e webhook do MP. Se o DNS do domínio próprio falhar, use https://cbt-site.vercel.app na Vercel. */
+/**
+ * URL pública (sem barra final): back_urls e webhook do MP.
+ * Padrão = domínio .vercel.app do projeto (não exige domínio comprado).
+ * Com domínio próprio: defina PUBLIC_SITE_BASE_URL na Vercel.
+ */
 function getPublicSiteBase() {
   const raw =
     process.env.PUBLIC_SITE_BASE_URL ||
     process.env.SITE_URL ||
-    'https://cerradobiketrilhas.com';
+    'https://cbt-site.vercel.app';
   return String(raw).trim().replace(/\/$/, '');
 }
 

@@ -1,9 +1,11 @@
 /**
  * Vercel Function: Confirmação de Inscrição
  * POST /api/confirm-inscription
- * Valida o pagamento no Mercado Pago e salva no Firebase Firestore
+ * - Navegador (pós-checkout): JSON com paymentId + formData
+ * - Webhook Mercado Pago: JSON { type: "payment", data: { id } } e/ou query ?data.id=&type=payment
  */
 
+import crypto from 'node:crypto';
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
@@ -44,9 +46,61 @@ function onlyDigits(value = '') {
   return String(value).replace(/\D/g, '');
 }
 
+/** Resolve payment id do POST do site ou do webhook Mercado Pago. */
+function extractPaymentId(body, query) {
+  const q = query || {};
+  const qDataId = q['data.id'] ? String(q['data.id']) : null;
+  const topicOrType = String(q.topic || q.type || '');
+  const fromQuery =
+    qDataId || (topicOrType === 'payment' && q.id ? String(q.id) : null);
+
+  const fromBody =
+    body.paymentId ||
+    body.payment_id ||
+    body.collection_id ||
+    (body.type === 'payment' && body.data?.id ? String(body.data.id) : null) ||
+    (body.topic === 'payment' && body.id ? String(body.id) : null);
+
+  return fromBody || fromQuery || null;
+}
+
 /**
- * Monta payload padrao da inscricao
+ * Valida x-signature quando MERCADO_PAGO_WEBHOOK_SECRET está definido.
+ * @see https://www.mercadopago.com.br/developers/pt/docs/checkout-pro/additional-content/notifications
  */
+function validateMercadoPagoWebhookSignature(req, body, paymentIdHint) {
+  const secret = process.env.MERCADO_PAGO_WEBHOOK_SECRET;
+  if (!secret) return true;
+
+  const sigHeader = req.headers['x-signature'];
+  if (!sigHeader) return true;
+
+  const xRequestId = req.headers['x-request-id'];
+  if (!xRequestId) return false;
+
+  const q = req.query || {};
+  let dataId = q['data.id'] ? String(q['data.id']) : '';
+  if (!dataId && body?.data?.id) dataId = String(body.data.id);
+  if (!dataId && paymentIdHint) dataId = String(paymentIdHint);
+
+  let ts;
+  let v1;
+  for (const part of String(sigHeader).split(',')) {
+    const idx = part.indexOf('=');
+    if (idx === -1) continue;
+    const key = part.slice(0, idx).trim();
+    const val = part.slice(idx + 1).trim();
+    if (key === 'ts') ts = val;
+    if (key === 'v1') v1 = val;
+  }
+  if (!ts || !v1) return false;
+
+  const template = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
+  const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
+  return hmac === v1;
+}
+
+/** Monta payload padrao da inscricao */
 function buildInscriptionData(paymentData, formData, paymentId) {
   const metadata = paymentData.metadata || {};
   const categoryMap = {
@@ -83,10 +137,10 @@ function buildInscriptionData(paymentData, formData, paymentId) {
  * Handler da função
  */
 export default async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -98,9 +152,12 @@ export default async function handler(req, res) {
 
   try {
     let body = req.body;
+    if (body == null || body === '') {
+      body = {};
+    }
     if (typeof body === 'string') {
       try {
-        body = JSON.parse(body || '{}');
+        body = JSON.parse(body.trim() || '{}');
       } catch {
         return res.status(400).json({ success: false, error: 'Corpo JSON inválido' });
       }
@@ -119,11 +176,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const paymentId =
-      body.paymentId ||
-      body.payment_id ||
-      body.collection_id ||
-      null;
+    const paymentId = extractPaymentId(body, req.query);
     const formData = body.formData || body.inscriptionData || null;
 
     if (!paymentId) {
@@ -131,6 +184,11 @@ export default async function handler(req, res) {
         success: false,
         error: 'paymentId é obrigatório'
       });
+    }
+
+    if (!validateMercadoPagoWebhookSignature(req, body, paymentId)) {
+      console.warn('[Confirm] Assinatura de webhook inválida');
+      return res.status(401).json({ success: false, error: 'Assinatura inválida' });
     }
 
     // Sempre valida o pagamento com o Mercado Pago no backend

@@ -175,6 +175,48 @@ const InscriptionForm = (() => {
   }
 
   /**
+   * Lê corpo da resposta como JSON (evita falha com corpo vazio ou HTML de erro).
+   */
+  /**
+   * Live Server / localhost não têm /api; usa produção Vercel. Opcional: apiBaseUrl em config.json.
+   */
+  async function getCreatePreferenceUrl() {
+    if (typeof CONFIG !== 'undefined' && typeof CONFIG.load === 'function') {
+      try {
+        const cfg = await CONFIG.load();
+        const base = cfg && cfg.apiBaseUrl && String(cfg.apiBaseUrl).trim();
+        if (base) {
+          return `${base.replace(/\/$/, '')}/api/create-preference`;
+        }
+      } catch (_) {
+        /* ignora */
+      }
+    }
+    const { hostname } = window.location;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'https://cbt-site.vercel.app/api/create-preference';
+    }
+    return '/api/create-preference';
+  }
+
+  async function parseJsonResponse(response) {
+    const text = await response.text();
+    const trimmed = text.trim();
+    if (!trimmed) {
+      throw new Error(
+        `Servidor retornou resposta vazia (HTTP ${response.status}). Verifique se a API está publicada.`
+      );
+    }
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      throw new Error(
+        `Resposta inválida do servidor (HTTP ${response.status}). ${trimmed.slice(0, 160)}`
+      );
+    }
+  }
+
+  /**
    * Criar preferência de pagamento
    */
   async function createPaymentPreference(formData) {
@@ -183,7 +225,8 @@ const InscriptionForm = (() => {
       const btn = elSubmit();
       if (btn) btn.disabled = true;
 
-      const response = await fetch('/api/create-preference', {
+      const url = await getCreatePreferenceUrl();
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -191,16 +234,21 @@ const InscriptionForm = (() => {
         body: JSON.stringify(formData)
       });
 
+      const data = await parseJsonResponse(response);
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Erro ao processar inscrição');
+        throw new Error(
+          data.message || data.error || `Erro ao processar inscrição (HTTP ${response.status})`
+        );
       }
 
-      const data = await response.json();
+      if (!data.checkoutUrl) {
+        throw new Error('Resposta sem URL de pagamento. Tente novamente ou contate a organização.');
+      }
 
       // Salvar dados no localStorage para recuperar após pagamento
       localStorage.setItem('inscriptionData', JSON.stringify(formData));
-      localStorage.setItem('paymentId', data.preferenceId);
+      localStorage.setItem('paymentId', data.preferenceId || '');
 
       // Redirecionar para checkout do Mercado Pago
       window.location.href = data.checkoutUrl;

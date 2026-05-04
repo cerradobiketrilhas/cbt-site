@@ -62,9 +62,10 @@ export default async function handler(req, res) {
   );
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(204).end();
   }
 
   if (req.method !== 'POST') {
@@ -72,7 +73,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { nome, email, cpf, dataNasc, telefone, cidade, categoria } = req.body;
+    let rawBody = req.body;
+    if (typeof rawBody === 'string') {
+      try {
+        rawBody = JSON.parse(rawBody || '{}');
+      } catch {
+        return res.status(400).json({
+          error: 'Invalid JSON',
+          message: 'Corpo da requisição não é JSON válido'
+        });
+      }
+    }
+    if (!rawBody || typeof rawBody !== 'object') {
+      return res.status(400).json({
+        error: 'Invalid body',
+        message: 'Envie os dados da inscrição em JSON no corpo da requisição'
+      });
+    }
+
+    const { nome, email, cpf, dataNasc, telefone, cidade, categoria } = rawBody;
 
     // Validar dados
     const errors = validateData({
@@ -142,10 +161,17 @@ export default async function handler(req, res) {
       }
     });
 
+    const isTestToken = String(accessToken).startsWith('TEST-');
+    const checkoutUrl =
+      (isTestToken && response.sandbox_init_point) ||
+      response.init_point ||
+      response.sandbox_init_point ||
+      `https://www.mercadopago.com.br/checkout/v1/redirect?preference-id=${response.id}`;
+
     // Retornar preferenceId e checkout URL
     return res.status(200).json({
       preferenceId: response.id,
-      checkoutUrl: response.init_point || `https://www.mercadopago.com.br/checkout/v1/redirect?preference-id=${response.id}`
+      checkoutUrl
     });
 
   } catch (error) {

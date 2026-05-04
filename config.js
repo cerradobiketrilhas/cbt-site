@@ -20,6 +20,7 @@ const CONFIG = (() => {
   };
 
   const getDefaultConfig = () => ({
+    apiBaseUrl: '',
     donation: {
       meta: 5000,
       arrecadado: 1850,

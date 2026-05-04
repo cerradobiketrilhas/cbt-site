@@ -305,6 +305,26 @@
         </section>
       </div>
     </section>
+
+    <!-- Lista de inscritos confirmados (por categoria) -->
+    <section
+      class="section section--content"
+      id="lista-inscritos"
+      aria-label="Lista de inscritos confirmados">
+      <div class="section-inner">
+        <header class="section-header fade-up">
+          <p class="eyebrow">Participantes</p>
+          <h2>Quem já se inscreveu</h2>
+          <p class="section-lead">
+            Nomes por categoria, após confirmação do pagamento. A lista é atualizada automaticamente.
+          </p>
+        </header>
+        <section class="box" aria-label="Lista agrupada por categoria">
+          <p id="lista-inscritos-status" class="inscricao-lista__status" role="status" aria-live="polite"></p>
+          <div id="lista-inscritos-conteudo" class="inscricao-lista" hidden></div>
+        </section>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -323,6 +343,11 @@
       appScript.src = `script-inscription.js?v=${version}`;
       appScript.async = false;
       document.body.appendChild(appScript);
+
+      const listaScript = document.createElement("script");
+      listaScript.src = `script-inscricao-lista.js?v=${version}`;
+      listaScript.async = false;
+      document.body.appendChild(listaScript);
     })();
   </script>
 

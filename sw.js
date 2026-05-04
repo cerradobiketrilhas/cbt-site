@@ -3,7 +3,7 @@
  * Versão 1.0
  */
 
-const CACHE_VERSION = 'cbt-v6';
+const CACHE_VERSION = 'cbt-v7';
 const CACHE_ASSETS = [
   '/',
   '/index.html',
@@ -18,6 +18,7 @@ const CACHE_ASSETS = [
   '/style.css',
   '/script-optimized.js',
   '/script-inscription.js',
+  '/script-inscricao-lista.js',
   '/script-confirmation.js',
   '/config.js',
   '/config.json',

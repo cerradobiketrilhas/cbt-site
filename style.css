@@ -1457,6 +1457,12 @@ button {
     padding-bottom: 72px;
   }
 
+  /* Vídeo desligado no mobile: o SO desenha o “play” por cima e o CSS não remove 100%.
+     Mantém o fundo do ::before (img/hero-bg.jpg) + linhas ::after. */
+  .section--hero video.hero-video {
+    display: none !important;
+  }
+
   .section--hero .section-inner {
     max-width: 680px;
   }

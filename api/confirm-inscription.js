@@ -75,8 +75,7 @@ function validateMercadoPagoWebhookSignature(req, body, paymentIdHint) {
   const sigHeader = req.headers['x-signature'];
   if (!sigHeader) return true;
 
-  const xRequestId = req.headers['x-request-id'];
-  if (!xRequestId) return false;
+  const xRequestId = req.headers['x-request-id'] || '';
 
   const q = req.query || {};
   let dataId = q['data.id'] ? String(q['data.id']) : '';
@@ -95,9 +94,19 @@ function validateMercadoPagoWebhookSignature(req, body, paymentIdHint) {
   }
   if (!ts || !v1) return false;
 
-  const template = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
-  const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
-  return hmac === v1;
+  /** MP: omitir partes ausentes do template; ordem id → request-id → ts */
+  const templates = [];
+  if (dataId && xRequestId) {
+    templates.push(`id:${dataId};request-id:${xRequestId};ts:${ts};`);
+  }
+  if (dataId) {
+    templates.push(`id:${dataId};ts:${ts};`);
+  }
+
+  return templates.some((template) => {
+    const hmac = crypto.createHmac('sha256', secret).update(template).digest('hex');
+    return hmac === v1;
+  });
 }
 
 /** Monta payload padrao da inscricao */

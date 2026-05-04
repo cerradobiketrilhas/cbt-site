@@ -4,7 +4,29 @@
  */
 
 const ConfirmationPage = (() => {
-  const params = new URLSearchParams(window.location.search);
+  function getSearchParams() {
+    return new URLSearchParams(window.location.search || '');
+  }
+
+  /** Mercado Pago pode enviar payment_id, collection_id ou capitalização diferente */
+  function readPaymentIdFromUrl() {
+    const fromSearch = (search) => {
+      const p = new URLSearchParams(search || '');
+      const direct = p.get('payment_id') || p.get('collection_id');
+      if (direct) return direct;
+      for (const [key, value] of p.entries()) {
+        const k = key.toLowerCase();
+        if ((k === 'payment_id' || k === 'collection_id') && value) return value;
+      }
+      return '';
+    };
+    let id = fromSearch(window.location.search);
+    if (!id && window.location.hash && window.location.hash.includes('=')) {
+      const tail = window.location.hash.slice(1);
+      id = fromSearch(tail.includes('?') ? tail.slice(tail.indexOf('?')) : `?${tail}`);
+    }
+    return id || '';
+  }
 
   async function getConfirmApiUrl() {
     if (typeof CONFIG !== 'undefined' && typeof CONFIG.load === 'function') {
@@ -39,12 +61,13 @@ const ConfirmationPage = (() => {
       }
     }
 
+    const p = getSearchParams();
     // Tentar recuperar de URL params (fallback basico)
     return {
-      nome: params.get('nome') || '',
-      email: params.get('email') || '',
-      categoria: params.get('categoria') || '',
-      telefone: params.get('telefone') || ''
+      nome: p.get('nome') || '',
+      email: p.get('email') || '',
+      categoria: p.get('categoria') || '',
+      telefone: p.get('telefone') || ''
     };
   }
 
@@ -105,16 +128,20 @@ const ConfirmationPage = (() => {
    * Confirma pagamento e persiste inscricao no backend
    */
   async function confirmAndSaveInscription(data) {
-    const paymentId =
-      params.get('payment_id') ||
-      params.get('collection_id') ||
-      '';
+    const p = getSearchParams();
+    const paymentId = readPaymentIdFromUrl();
 
-    if (!paymentId) return;
+    if (!paymentId) {
+      showStatusMessage(
+        'Não encontramos o ID do pagamento na URL. No Mercado Pago, use o link Voltar à loja (ou equivalente) para retornar ao site após o Pix.',
+        'error'
+      );
+      return;
+    }
 
     const paymentStatus =
-      params.get('status') ||
-      params.get('collection_status') ||
+      p.get('status') ||
+      p.get('collection_status') ||
       '';
 
     if (
@@ -126,7 +153,7 @@ const ConfirmationPage = (() => {
       return;
     }
 
-    const maxAttempts = 12;
+    const maxAttempts = 20;
     const delayMs = 2500;
 
     try {

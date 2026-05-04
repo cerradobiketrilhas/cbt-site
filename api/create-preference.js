@@ -162,7 +162,8 @@ export default async function handler(req, res) {
           failure: 'https://cerradobiketrilhas.com/inscricao.html',
           pending: 'https://cerradobiketrilhas.com/confirmacao.html'
         },
-        auto_return: 'approved',
+        // 'all' = volta ao site mesmo com Pix ainda pending; a página confirma e faz polling até approved
+        auto_return: 'all',
         // Não exclui nenhum meio; deixa Pix, cartão, saldo etc. conforme conta MP
         payment_methods: {
           excluded_payment_types: [],

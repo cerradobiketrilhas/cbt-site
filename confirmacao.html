@@ -26,16 +26,7 @@
   <!-- Preload critical fonts -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" as="style">
 
-  <!-- Inline critical CSS -->
-  <script>
-    (function () {
-      const version = Date.now();
-      const stylesheet = document.createElement("link");
-      stylesheet.rel = "stylesheet";
-      stylesheet.href = `style.css?v=${version}`;
-      document.head.appendChild(stylesheet);
-    })();
-  </script>
+  <link rel="stylesheet" href="style.css">
 
   <!-- Config (cache bust válido; evita src HTML quebrado com "+ Date.now()") -->
   <script>

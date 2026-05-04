@@ -28,19 +28,17 @@
   <!-- Preload critical fonts for better LCP -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" as="style">
   
-  <!-- Stylesheet injection for cache busting -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Config loader (cache bust) -->
   <script>
     (function () {
-      const version = Date.now();
-      const stylesheet = document.createElement("link");
-      stylesheet.rel = "stylesheet";
-      stylesheet.href = `style.css?v=${version}`;
-      document.head.appendChild(stylesheet);
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'config.js?v=' + Date.now();
+      document.head.appendChild(s);
     })();
   </script>
-  
-  <!-- Config loader - deve estar no head para estar disponivel cedo -->
-  <script src="config.js"></script>
 </head>
 
 <body>

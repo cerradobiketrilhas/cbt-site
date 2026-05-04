@@ -3,7 +3,7 @@
  * Versão 1.0
  */
 
-const CACHE_VERSION = 'cbt-v5';
+const CACHE_VERSION = 'cbt-v6';
 const CACHE_ASSETS = [
   '/',
   '/index.html',

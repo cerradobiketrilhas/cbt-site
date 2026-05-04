@@ -111,11 +111,22 @@ export default async function handler(req, res) {
       });
     }
 
+    // Telefone BR para o payer (Pix e checkout costumam exigir area_code + number)
+    const telDigits = String(telefone).replace(/\D/g, '');
+    let phoneArea = '61';
+    let phoneNumber = telDigits;
+    if (telDigits.length >= 10) {
+      phoneArea = telDigits.slice(0, 2);
+      phoneNumber = telDigits.slice(2);
+    }
+
     // Criar preferência no Mercado Pago
     const preference = new Preference(mercadopago);
 
     const response = await preference.create({
       body: {
+        // false = permite pendente (Pix, boleto); não remove cartões nem outros meios
+        binary_mode: false,
         items: [
           {
             id: '2-treino-cbt',
@@ -129,7 +140,8 @@ export default async function handler(req, res) {
           name: nome,
           email: email,
           phone: {
-            number: telefone
+            area_code: phoneArea,
+            number: phoneNumber
           },
           identification: {
             type: 'CPF',
@@ -147,6 +159,12 @@ export default async function handler(req, res) {
           pending: 'https://cerradobiketrilhas.com/confirmacao.html'
         },
         auto_return: 'approved',
+        // Não exclui nenhum meio; deixa Pix, cartão, saldo etc. conforme conta MP
+        payment_methods: {
+          excluded_payment_types: [],
+          excluded_payment_methods: [],
+          installments: 12
+        },
         notification_url: 'https://cerradobiketrilhas.com/api/confirm-inscription',
         external_reference: `inscricao_${cpf}_${Date.now()}`,
         metadata: {

@@ -121,7 +121,7 @@ export default async function handler(req, res) {
             id: '2-treino-cbt',
             title: '2º Treino Cronometrado - CBT',
             quantity: 1,
-            unit_price: 80,
+            unit_price: 1,
             currency_id: 'BRL'
           }
         ],

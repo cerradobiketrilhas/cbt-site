@@ -248,10 +248,13 @@ function buildInscriptionData(paymentData, formData, paymentId) {
   const metadata = paymentData.metadata || {};
   const categoryMap = {
     elite: 'Elite',
-    sport: 'Sport',
-    amador: 'Amador',
+    iniciante: 'Iniciante',
     feminino: 'Feminino',
-    master: 'Master'
+    master: 'Master',
+    ebike: 'E-bike',
+    // legado (preferências/pagamentos antigos)
+    sport: 'Iniciante',
+    amador: 'Amador'
   };
 
   const categoriaRaw = formData?.categoria || metadata.categoria || '';

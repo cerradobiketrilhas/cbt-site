@@ -84,11 +84,13 @@ const ConfirmationPage = (() => {
       },
       categoria: (v) => {
         const labels = {
-          'elite': 'Elite',
-          'sport': 'Sport',
-          'amador': 'Amador',
-          'feminino': 'Feminino',
-          'master': 'Master'
+          elite: 'Elite',
+          iniciante: 'Iniciante',
+          feminino: 'Feminino',
+          master: 'Master',
+          ebike: 'E-bike',
+          sport: 'Iniciante',
+          amador: 'Amador'
         };
         return labels[v] || v;
       }

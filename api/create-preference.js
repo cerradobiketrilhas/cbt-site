@@ -64,7 +64,7 @@ function validateData(data) {
     errors.push('Cidade inválida');
   }
 
-  const categorias = ['elite', 'sport', 'amador', 'feminino', 'master'];
+  const categorias = ['elite', 'iniciante', 'feminino', 'master', 'ebike'];
   if (!data.categoria || !categorias.includes(data.categoria)) {
     errors.push('Categoria inválida');
   }

@@ -6,6 +6,7 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
+const EVENT_UNIT_PRICE = 5;
 const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
 
 function normalizeAccessToken(rawToken) {
@@ -144,7 +145,7 @@ export default async function handler(req, res) {
             id: '2-treino-cbt',
             title: '2º Treino Cronometrado - CBT',
             quantity: 1,
-            unit_price: 5,
+            unit_price: EVENT_UNIT_PRICE,
             currency_id: 'BRL'
           }
         ],
@@ -184,7 +185,8 @@ export default async function handler(req, res) {
     // Retornar preferenceId e checkout URL
     return res.status(200).json({
       preferenceId: response.id,
-      checkoutUrl
+      checkoutUrl,
+      unitPrice: EVENT_UNIT_PRICE
     });
 
   } catch (error) {

@@ -54,12 +54,6 @@ function escapeHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
-function formatCpfDisplay(digits) {
-  const d = onlyDigits(digits);
-  if (d.length !== 11) return d || '—';
-  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
-}
-
 function formatBrl(value) {
   const n = Number(value);
   if (!Number.isFinite(n)) return '—';
@@ -94,7 +88,6 @@ function buildConfirmationEmailHtml(details, protocoloDocId, siteBase) {
   const rows = [
     ['Nome completo', escapeHtml(details.nome)],
     ['E-mail', escapeHtml(details.email)],
-    ['CPF', escapeHtml(formatCpfDisplay(details.cpf))],
     ['Data de nascimento', escapeHtml(String(details.dataNasc || '—'))],
     ['Telefone', escapeHtml(formatPhoneDisplay(details.telefone))],
     ['Cidade', escapeHtml(details.cidade)],

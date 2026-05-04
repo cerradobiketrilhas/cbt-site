@@ -3,6 +3,7 @@
  * POST /api/create-preference
  */
 
+import { randomUUID } from 'node:crypto';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
@@ -46,10 +47,6 @@ function validateData(data) {
 
   if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.push('Email inválido');
-  }
-
-  if (!data.cpf || data.cpf.length !== 11) {
-    errors.push('CPF inválido');
   }
 
   if (!data.dataNasc) {
@@ -124,13 +121,12 @@ export default async function handler(req, res) {
       });
     }
 
-    const { nome, email, cpf, dataNasc, telefone, cidade, categoria } = rawBody;
+    const { nome, email, dataNasc, telefone, cidade, categoria } = rawBody;
 
     // Validar dados
     const errors = validateData({
       nome,
       email,
-      cpf,
       dataNasc,
       telefone,
       cidade,
@@ -186,11 +182,10 @@ export default async function handler(req, res) {
           installments: 12
         },
         notification_url: `${siteBase}/api/confirm-inscription`,
-        external_reference: `inscricao_${cpf}_${Date.now()}`,
+        external_reference: `inscricao_${Date.now()}_${randomUUID()}`,
         metadata: {
           nome,
           email,
-          cpf,
           dataNasc,
           telefone,
           cidade,

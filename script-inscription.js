@@ -19,15 +19,6 @@ const InscriptionForm = (() => {
    * Formatadores de input
    */
   const formatters = {
-    cpf(value) {
-      return value
-        .replace(/\D/g, '')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-        .slice(0, 14);
-    },
-
     phone(value) {
       return value
         .replace(/\D/g, '')
@@ -48,32 +39,6 @@ const InscriptionForm = (() => {
     email(value) {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(value) ? null : 'E-mail inválido';
-    },
-
-    cpf(value) {
-      const clean = value.replace(/\D/g, '');
-      if (clean.length !== 11) return 'CPF deve ter 11 dígitos';
-      if (/^(\d)\1{10}$/.test(clean)) return 'CPF inválido';
-
-      // Validar dígitos verificadores
-      let sum = 0;
-      let remainder;
-      for (let i = 1; i <= 9; i++) {
-        sum += parseInt(clean.substring(i - 1, i)) * (11 - i);
-      }
-      remainder = (sum * 10) % 11;
-      if (remainder === 10 || remainder === 11) remainder = 0;
-      if (remainder !== parseInt(clean.substring(9, 10))) return 'CPF inválido';
-
-      sum = 0;
-      for (let i = 1; i <= 10; i++) {
-        sum += parseInt(clean.substring(i - 1, i)) * (12 - i);
-      }
-      remainder = (sum * 10) % 11;
-      if (remainder === 10 || remainder === 11) remainder = 0;
-      if (remainder !== parseInt(clean.substring(10, 11))) return 'CPF inválido';
-
-      return null;
     },
 
     dataNasc(value) {
@@ -107,13 +72,8 @@ const InscriptionForm = (() => {
    * Setup dos event listeners para formato de inputs
    */
   function setupFormatters() {
-    const cpfInput = document.getElementById('cpf');
     const phoneInput = document.getElementById('telefone');
-    if (!cpfInput || !phoneInput) return;
-
-    cpfInput.addEventListener('input', (e) => {
-      e.target.value = formatters.cpf(e.target.value);
-    });
+    if (!phoneInput) return;
 
     phoneInput.addEventListener('input', (e) => {
       e.target.value = formatters.phone(e.target.value);
@@ -147,7 +107,7 @@ const InscriptionForm = (() => {
    * Validar formulário inteiro
    */
   function validateForm() {
-    const fields = ['nome', 'email', 'cpf', 'dataNasc', 'telefone', 'cidade', 'categoria'];
+    const fields = ['nome', 'email', 'dataNasc', 'telefone', 'cidade', 'categoria'];
     let isValid = true;
 
     fields.forEach(field => {
@@ -166,7 +126,6 @@ const InscriptionForm = (() => {
     return {
       nome: document.getElementById('nome').value.trim(),
       email: document.getElementById('email').value.trim(),
-      cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
       dataNasc: document.getElementById('dataNasc').value,
       telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
       cidade: document.getElementById('cidade').value.trim(),
@@ -314,7 +273,7 @@ const InscriptionForm = (() => {
     setupFormatters();
 
     // Validação em tempo real
-    ['nome', 'email', 'cpf', 'dataNasc', 'telefone', 'cidade', 'categoria'].forEach(field => {
+    ['nome', 'email', 'dataNasc', 'telefone', 'cidade', 'categoria'].forEach(field => {
       const el = document.getElementById(field);
       if (el) {
         el.addEventListener('blur', () => validateField(field));

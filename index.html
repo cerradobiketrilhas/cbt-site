@@ -145,7 +145,15 @@
   <main id="main-content">
     <section id="inicio" class="section section--hero" data-section-id="inicio">
       <!-- video background (replace src with real footage) -->
-      <video class="hero-video" autoplay muted loop playsinline>
+      <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        disablePictureInPicture>
         <source src="img/hero.mp4" type="video/mp4">
       </video>
       <div class="section-inner section-inner--hero">
@@ -491,6 +499,24 @@
     })();
   </script>
   
+  <script>
+    (function () {
+      var v = document.querySelector('.hero-video');
+      if (!v) return;
+      v.muted = true;
+      var play = function () {
+        var p = v.play();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      };
+      v.addEventListener('loadeddata', play);
+      v.addEventListener('canplay', play);
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) play();
+      });
+      play();
+    })();
+  </script>
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

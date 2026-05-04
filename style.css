@@ -449,6 +449,28 @@ button {
   pointer-events: none;
 }
 
+/* Esconde botão/controles nativos do vídeo no Safari iOS / Chrome Android (overlay de “play”) */
+.section--hero video.hero-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.section--hero video.hero-video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+.section--hero video.hero-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+.section--hero video.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+}
+
+.section--hero video.hero-video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
 .section--hero .section-inner {
   z-index: 2;
   max-width: 900px;

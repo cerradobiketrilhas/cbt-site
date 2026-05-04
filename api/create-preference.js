@@ -54,8 +54,12 @@ function validateData(data) {
  * Handler da função
  */
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', 'https://cerradobiketrilhas.com');
+  // CORS: ecoar origem permite localhost, preview Vercel e domínio de produção
+  const requestOrigin = req.headers.origin;
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    requestOrigin || '*'
+  );
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

@@ -4,15 +4,16 @@
  */
 
 const InscriptionForm = (() => {
-  const MERCADO_PAGO_PUBLIC_KEY = 'TEST-b2cc91ad-a534-4253-81ee-939d8d1df20f';
-  const form = document.getElementById('inscription-form');
-  const submitBtn = document.getElementById('submit-btn');
-  const formMessage = document.getElementById('form-message');
-
-  // Inicializar Mercado Pago
-  const mp = new MercadoPago(MERCADO_PAGO_PUBLIC_KEY, {
-    locale: 'pt-BR'
-  });
+  /** Referências lazy: script pode ser injetado antes do DOM estar pronto. */
+  function elForm() {
+    return document.getElementById('inscription-form');
+  }
+  function elSubmit() {
+    return document.getElementById('submit-btn');
+  }
+  function elMessage() {
+    return document.getElementById('form-message');
+  }
 
   /**
    * Formatadores de input
@@ -108,6 +109,7 @@ const InscriptionForm = (() => {
   function setupFormatters() {
     const cpfInput = document.getElementById('cpf');
     const phoneInput = document.getElementById('telefone');
+    if (!cpfInput || !phoneInput) return;
 
     cpfInput.addEventListener('input', (e) => {
       e.target.value = formatters.cpf(e.target.value);
@@ -178,7 +180,8 @@ const InscriptionForm = (() => {
   async function createPaymentPreference(formData) {
     try {
       showMessage('Processando inscrição...', 'loading');
-      submitBtn.disabled = true;
+      const btn = elSubmit();
+      if (btn) btn.disabled = true;
 
       const response = await fetch('/api/create-preference', {
         method: 'POST',
@@ -205,7 +208,8 @@ const InscriptionForm = (() => {
     } catch (error) {
       console.error('Erro ao criar preferência:', error);
       showMessage(`Erro: ${error.message}`, 'error');
-      submitBtn.disabled = false;
+      const btn = elSubmit();
+      if (btn) btn.disabled = false;
     }
   }
 
@@ -213,9 +217,11 @@ const InscriptionForm = (() => {
    * Mostrar mensagem de status
    */
   function showMessage(text, type = 'info') {
-    formMessage.textContent = text;
-    formMessage.className = `form-message form-message--${type}`;
-    formMessage.style.display = 'block';
+    const box = elMessage();
+    if (!box) return;
+    box.textContent = text;
+    box.className = `form-message form-message--${type}`;
+    box.style.display = 'block';
   }
 
   /**
@@ -225,7 +231,8 @@ const InscriptionForm = (() => {
     e.preventDefault();
 
     // Limpar mensagens anteriores
-    formMessage.textContent = '';
+    const box = elMessage();
+    if (box) box.textContent = '';
 
     // Validar
     if (!validateForm()) {
@@ -252,6 +259,7 @@ const InscriptionForm = (() => {
    * Inicializar
    */
   function init() {
+    const form = elForm();
     if (!form) return;
 
     // Setup formatadores
@@ -276,5 +284,16 @@ const InscriptionForm = (() => {
   return { init };
 })();
 
-// Inicializar quando DOM estiver pronto
-document.addEventListener('DOMContentLoaded', InscriptionForm.init);
+/**
+ * Scripts carregados dinamicamente (como em inscricao.html) podem rodar depois
+ * do DOMContentLoaded; nesse caso o listener nunca dispara e o form faz submit nativo.
+ */
+function bootInscriptionForm() {
+  InscriptionForm.init();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootInscriptionForm, { once: true });
+} else {
+  bootInscriptionForm();
+}

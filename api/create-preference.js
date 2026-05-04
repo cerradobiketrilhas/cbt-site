@@ -189,6 +189,7 @@ export default async function handler(req, res) {
         external_reference: `inscricao_${cpf}_${Date.now()}`,
         metadata: {
           nome,
+          email,
           cpf,
           dataNasc,
           telefone,

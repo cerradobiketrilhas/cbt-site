@@ -46,6 +46,140 @@ function onlyDigits(value = '') {
   return String(value).replace(/\D/g, '');
 }
 
+function escapeHtml(text) {
+  return String(text ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function formatCpfDisplay(digits) {
+  const d = onlyDigits(digits);
+  if (d.length !== 11) return d || '—';
+  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
+}
+
+function formatBrl(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '—';
+  return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function formatPhoneDisplay(digits) {
+  const d = onlyDigits(digits);
+  if (d.length < 10) return d || '—';
+  if (d.length === 11) return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+}
+
+function isValidEmail(addr) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(addr || '').trim());
+}
+
+/** Base pública do site (mesma lógica de `create-preference.js`) para links no e-mail. */
+function getPublicSiteBase() {
+  const raw =
+    process.env.PUBLIC_SITE_BASE_URL ||
+    process.env.SITE_URL ||
+    'https://cbt-site.vercel.app';
+  return String(raw).trim().replace(/\/$/, '');
+}
+
+function buildConfirmationEmailHtml(details, protocoloDocId, siteBase) {
+  const base = String(siteBase || '').trim().replace(/\/$/, '') || 'https://cbt-site.vercel.app';
+  const urlHome = `${base}/`;
+  const urlInscricao = `${base}/inscricao.html`;
+  const urlConfirmacao = `${base}/confirmacao.html`;
+  const rows = [
+    ['Nome completo', escapeHtml(details.nome)],
+    ['E-mail', escapeHtml(details.email)],
+    ['CPF', escapeHtml(formatCpfDisplay(details.cpf))],
+    ['Data de nascimento', escapeHtml(String(details.dataNasc || '—'))],
+    ['Telefone', escapeHtml(formatPhoneDisplay(details.telefone))],
+    ['Cidade', escapeHtml(details.cidade)],
+    ['Categoria', escapeHtml(details.categoria)],
+    ['Valor pago', escapeHtml(formatBrl(details.valor))],
+    ['ID do pagamento (Mercado Pago)', escapeHtml(String(details.idPagamento || '—'))],
+    ['Forma de pagamento', escapeHtml(String(details.metodo || '—'))],
+    ['Referência', escapeHtml(String(details.referencia || '—'))],
+    ['Descrição', escapeHtml(String(details.descricao || '—'))],
+    ['Protocolo da inscrição', escapeHtml(protocoloDocId)]
+  ];
+  const trs = rows
+    .map(
+      ([k, v]) =>
+        `<tr><td style="padding:8px 12px;border:1px solid #e5e7eb;background:#f9fafb;font-weight:600;width:38%;">${k}</td><td style="padding:8px 12px;border:1px solid #e5e7eb;">${v}</td></tr>`
+    )
+    .join('');
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;color:#111827;">
+<p>Olá, <strong>${escapeHtml(details.nome)}</strong>,</p>
+<p>Obrigado por se inscrever. Sua inscrição no <strong>2º Treino Cronometrado CBT</strong> está <strong>confirmada</strong> — o pagamento foi aprovado pelo Mercado Pago. Guarde este e-mail: nele constam o <strong>protocolo</strong> e todos os dados da sua inscrição.</p>
+<p style="margin:20px 0 8px;">
+  <a href="${escapeHtml(urlHome)}" style="display:inline-block;padding:10px 16px;background:#166534;color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">Acessar o site CBT</a>
+</p>
+<p style="font-size:14px;margin:0 0 16px;">
+  <a href="${escapeHtml(urlInscricao)}" style="color:#15803d;">Página de inscrição</a>
+  &nbsp;·&nbsp;
+  <a href="${escapeHtml(urlConfirmacao)}" style="color:#15803d;">Página de confirmação</a>
+</p>
+<table style="border-collapse:collapse;width:100%;max-width:560px;margin:16px 0;">${trs}</table>
+<p style="font-size:14px;color:#6b7280;">Em caso de dúvidas, fale conosco pelos canais indicados no site.</p>
+<p style="font-size:14px;color:#6b7280;margin-top:8px;">Cerrado Bike Trilhas (CBT)</p>
+</body></html>`;
+}
+
+/**
+ * Envia e-mail de confirmação via Resend (https://resend.com).
+ * Requer RESEND_API_KEY na Vercel. Falhas são apenas logadas — a inscrição já foi salva.
+ */
+async function sendConfirmationEmail(details, protocoloDocId) {
+  const apiKey = String(process.env.RESEND_API_KEY || '').trim();
+  const to = String(details.email || '').trim();
+  if (!apiKey) {
+    console.warn('[Confirm] RESEND_API_KEY não definido; e-mail de confirmação não enviado.');
+    return { sent: false, reason: 'no_api_key' };
+  }
+  if (!isValidEmail(to)) {
+    console.warn('[Confirm] E-mail do participante inválido; confirmação não enviada.');
+    return { sent: false, reason: 'invalid_email' };
+  }
+
+  const from =
+    String(process.env.RESEND_FROM || '').trim() ||
+    'Cerrado Bike Trilhas <onboarding@resend.dev>';
+  const subject = 'CBT · Inscrição confirmada — 2º Treino Cronometrado';
+  const siteBase = getPublicSiteBase();
+  const html = buildConfirmationEmailHtml(details, protocoloDocId, siteBase);
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      html
+    })
+  });
+
+  const raw = await res.text();
+  if (!res.ok) {
+    let msg = raw;
+    try {
+      const j = JSON.parse(raw);
+      msg = j.message || JSON.stringify(j);
+    } catch {
+      /* ignore */
+    }
+    throw new Error(`Resend HTTP ${res.status}: ${msg}`);
+  }
+  return { sent: true };
+}
+
 /** Resolve payment id do POST do site ou do webhook Mercado Pago. */
 function extractPaymentId(body, query) {
   const q = query || {};
@@ -124,7 +258,7 @@ function buildInscriptionData(paymentData, formData, paymentId) {
 
   return {
     nome: formData?.nome || metadata.nome || paymentData.payer?.first_name || 'N/A',
-    email: formData?.email || paymentData.payer?.email || 'N/A',
+    email: formData?.email || metadata.email || paymentData.payer?.email || 'N/A',
     cpf: onlyDigits(formData?.cpf || metadata.cpf || paymentData.payer?.identification?.number || ''),
     dataNasc: formData?.dataNasc || metadata.dataNasc || null,
     telefone: onlyDigits(formData?.telefone || metadata.telefone || paymentData.payer?.phone?.number || ''),
@@ -233,6 +367,12 @@ export default async function handler(req, res) {
     }
 
     const docRef = await addDoc(inscricoesRef, inscriptionData);
+
+    try {
+      await sendConfirmationEmail(inscriptionData, docRef.id);
+    } catch (emailErr) {
+      console.error('[Confirm] Falha ao enviar e-mail de confirmação:', emailErr);
+    }
 
     return res.status(200).json({
       success: true,

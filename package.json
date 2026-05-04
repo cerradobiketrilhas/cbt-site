@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx serve . --listen 3000",
+    "dev:api": "npx vercel dev",
     "build": "node -e \"console.log('Build estático concluído')\""
   },
   "dependencies": {

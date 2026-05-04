@@ -10,10 +10,11 @@ import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
   collection,
-  addDoc,
+  doc,
   getDocs,
   limit,
   query,
+  runTransaction,
   serverTimestamp,
   where
 } from 'firebase/firestore';
@@ -344,11 +345,16 @@ export default async function handler(req, res) {
     }
 
     const inscriptionData = buildInscriptionData(paymentData, formData, paymentId);
-
+    const paymentKey = String(paymentId);
     const inscricoesRef = collection(db, 'inscricoes');
+
+    /**
+     * 1) Qualquer doc com mesmo idPagamento (inclui registros antigos com ID aleatório).
+     * 2) Transação em docId fixo mp_<id> evita corrida webhook + browser criando dois addDoc.
+     */
     const dupQ = query(
       inscricoesRef,
-      where('idPagamento', '==', String(paymentId)),
+      where('idPagamento', '==', paymentKey),
       limit(1)
     );
     const dupSnap = await getDocs(dupQ);
@@ -362,10 +368,30 @@ export default async function handler(req, res) {
       });
     }
 
-    const docRef = await addDoc(inscricoesRef, inscriptionData);
+    const canonicalId = `mp_${paymentKey}`;
+    const canonicalRef = doc(db, 'inscricoes', canonicalId);
+
+    let created = false;
+    await runTransaction(db, async (transaction) => {
+      const snap = await transaction.get(canonicalRef);
+      if (snap.exists()) {
+        return;
+      }
+      transaction.set(canonicalRef, inscriptionData);
+      created = true;
+    });
+
+    if (!created) {
+      return res.status(200).json({
+        success: true,
+        message: 'Inscrição já registrada',
+        docId: canonicalId,
+        status: 'confirmado'
+      });
+    }
 
     try {
-      await sendConfirmationEmail(inscriptionData, docRef.id);
+      await sendConfirmationEmail(inscriptionData, canonicalId);
     } catch (emailErr) {
       console.error('[Confirm] Falha ao enviar e-mail de confirmação:', emailErr);
     }
@@ -373,7 +399,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: 'Inscrição confirmada e salva no Firestore',
-      docId: docRef.id,
+      docId: canonicalId,
       status: 'confirmado'
     });
 

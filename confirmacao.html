@@ -37,8 +37,15 @@
     })();
   </script>
 
-  <!-- Config and Service Worker -->
-  <script async src="config.js?v=" + Date.now()"></script>
+  <!-- Config (cache bust válido; evita src HTML quebrado com "+ Date.now()") -->
+  <script>
+    (function () {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'config.js?v=' + Date.now();
+      document.head.appendChild(s);
+    })();
+  </script>
 
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -171,8 +178,8 @@
           <div class="next-steps fade-up">
             <h3>Próximos passos</h3>
             <ol>
-              <li>Um e-mail de confirmação foi enviado para sua caixa de entrada</li>
-              <li>Salve o protocolo da sua inscrição (mostrado acima)</li>
+              <li>Salve o protocolo da sua inscrição (mostrado acima) ou tire uma captura de tela</li>
+              <li>Confira seu e-mail se a organização enviar confirmação</li>
               <li>Leia as instruções e dicas para se preparar</li>
               <li>Chegue com antecedência no dia da prova</li>
             </ol>

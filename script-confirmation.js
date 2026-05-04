@@ -6,6 +6,25 @@
 const ConfirmationPage = (() => {
   const params = new URLSearchParams(window.location.search);
 
+  async function getConfirmApiUrl() {
+    if (typeof CONFIG !== 'undefined' && typeof CONFIG.load === 'function') {
+      try {
+        const cfg = await CONFIG.load();
+        const base = cfg && cfg.apiBaseUrl && String(cfg.apiBaseUrl).trim();
+        if (base) {
+          return `${base.replace(/\/$/, '')}/api/confirm-inscription`;
+        }
+      } catch (_) {
+        /* ignora */
+      }
+    }
+    const { hostname } = window.location;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'https://cbt-site.vercel.app/api/confirm-inscription';
+    }
+    return '/api/confirm-inscription';
+  }
+
   /**
    * Recuperar dados da inscrição
    */
@@ -86,45 +105,96 @@ const ConfirmationPage = (() => {
    * Confirma pagamento e persiste inscricao no backend
    */
   async function confirmAndSaveInscription(data) {
-    const paymentId = params.get('payment_id');
-    const paymentStatus = params.get('status');
+    const paymentId =
+      params.get('payment_id') ||
+      params.get('collection_id') ||
+      '';
 
-    // Evita chamadas desnecessarias ao abrir a pagina sem retorno do checkout
     if (!paymentId) return;
 
-    if (paymentStatus && paymentStatus !== 'approved') {
-      showStatusMessage('Pagamento ainda não aprovado. Assim que aprovar, a inscrição será confirmada.', 'error');
+    const paymentStatus =
+      params.get('status') ||
+      params.get('collection_status') ||
+      '';
+
+    if (
+      paymentStatus === 'rejected' ||
+      paymentStatus === 'cancelled' ||
+      paymentStatus === 'failed'
+    ) {
+      showStatusMessage('Pagamento não foi concluído. Refaça a inscrição se necessário.', 'error');
       return;
     }
 
+    const maxAttempts = 12;
+    const delayMs = 2500;
+
     try {
       showStatusMessage('Confirmando pagamento e salvando inscrição...', 'info');
+      const url = await getConfirmApiUrl();
 
-      const response = await fetch('/api/confirm-inscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          paymentId,
-          formData: data
-        })
-      });
+      let lastError = null;
 
-      const payload = await response.json();
-      if (!response.ok || !payload.success) {
-        throw new Error(payload.error || payload.message || 'Falha ao confirmar inscrição');
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            paymentId,
+            formData: data
+          })
+        });
+
+        let payload = {};
+        try {
+          const text = await response.text();
+          payload = text.trim() ? JSON.parse(text) : {};
+        } catch {
+          payload = {};
+        }
+
+        if (response.ok && payload.success) {
+          const protocoloEl = document.getElementById('conf-protocolo');
+          if (protocoloEl && payload.docId) {
+            protocoloEl.textContent = payload.docId;
+          }
+          showStatusMessage('Inscrição confirmada e salva com sucesso.', 'success');
+          return;
+        }
+
+        const terminal = ['rejected', 'cancelled', 'refunded'].includes(payload.status);
+        if (terminal) {
+          lastError = payload.message || payload.error || 'Pagamento não aprovado';
+          break;
+        }
+
+        const mpPending = payload.status === 'pending';
+
+        if (mpPending && attempt < maxAttempts) {
+          showStatusMessage(
+            `Aguardando confirmação do pagamento no Mercado Pago (${attempt}/${maxAttempts})…`,
+            'info'
+          );
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+          continue;
+        }
+
+        lastError =
+          payload.error ||
+          payload.message ||
+          `Falha ao confirmar (HTTP ${response.status})`;
+        break;
       }
 
-      const protocoloEl = document.getElementById('conf-protocolo');
-      if (protocoloEl && payload.docId) {
-        protocoloEl.textContent = payload.docId;
-      }
-
-      showStatusMessage('Inscrição confirmada e salva com sucesso.', 'success');
+      throw new Error(lastError || 'Falha ao confirmar inscrição');
     } catch (error) {
       console.error('[Confirmation] Erro ao confirmar inscrição:', error);
-      showStatusMessage('Não foi possível confirmar automaticamente. Entre em contato com a organização.', 'error');
+      showStatusMessage(
+        'Não foi possível confirmar automaticamente. Guarde o comprovante do Pix e fale com a organização.',
+        'error'
+      );
     }
   }
 

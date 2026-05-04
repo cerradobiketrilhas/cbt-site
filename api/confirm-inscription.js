@@ -5,7 +5,16 @@
  */
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  limit,
+  query,
+  serverTimestamp,
+  where
+} from 'firebase/firestore';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 // Configurar Firebase (credenciais de teste)
@@ -88,6 +97,18 @@ export default async function handler(req, res) {
   }
 
   try {
+    let body = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body || '{}');
+      } catch {
+        return res.status(400).json({ success: false, error: 'Corpo JSON inválido' });
+      }
+    }
+    if (!body || typeof body !== 'object') {
+      return res.status(400).json({ success: false, error: 'Corpo da requisição inválido' });
+    }
+
     const envToken = normalizeAccessToken(process.env.MERCADO_PAGO_ACCESS_TOKEN);
     const accessToken = envToken || TEST_ACCESS_TOKEN;
 
@@ -98,8 +119,12 @@ export default async function handler(req, res) {
       });
     }
 
-    const paymentId = req.body.paymentId || req.body.payment_id;
-    const formData = req.body.formData || req.body.inscriptionData || null;
+    const paymentId =
+      body.paymentId ||
+      body.payment_id ||
+      body.collection_id ||
+      null;
+    const formData = body.formData || body.inscriptionData || null;
 
     if (!paymentId) {
       return res.status(400).json({
@@ -123,8 +148,23 @@ export default async function handler(req, res) {
 
     const inscriptionData = buildInscriptionData(paymentData, formData, paymentId);
 
-    // Salvar no Firestore
     const inscricoesRef = collection(db, 'inscricoes');
+    const dupQ = query(
+      inscricoesRef,
+      where('idPagamento', '==', String(paymentId)),
+      limit(1)
+    );
+    const dupSnap = await getDocs(dupQ);
+    if (!dupSnap.empty) {
+      const existing = dupSnap.docs[0];
+      return res.status(200).json({
+        success: true,
+        message: 'Inscrição já registrada',
+        docId: existing.id,
+        status: 'confirmado'
+      });
+    }
+
     const docRef = await addDoc(inscricoesRef, inscriptionData);
 
     return res.status(200).json({

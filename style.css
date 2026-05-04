@@ -2087,6 +2087,17 @@ select.form-input {
   appearance: none;
 }
 
+select.form-input option {
+  background: #09090b;
+  color: #f9fafb;
+}
+
+select.form-input option:checked,
+select.form-input option:hover {
+  background: #27272a;
+  color: #f9fafb;
+}
+
 .form-error {
   display: block;
   color: #ef4444;

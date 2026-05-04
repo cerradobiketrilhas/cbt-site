@@ -367,6 +367,13 @@ function initSite() {
   }
 
   events.on(document, 'click', (event) => {
+    const directPageLink = event.target.closest('a[href$=".html"], a[href^="/"]');
+    if (directPageLink && !directPageLink.hasAttribute('data-section-target')) {
+      // Garante navegacao normal entre paginas, sem interceptacao de scroll interno.
+      window.location.href = directPageLink.getAttribute('href');
+      return;
+    }
+
     const trigger = event.target.closest("[data-section-target]");
     if (!trigger) return;
 

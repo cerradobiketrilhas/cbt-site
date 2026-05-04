@@ -60,7 +60,7 @@ function buildInscriptionData(paymentData, formData, paymentId) {
     categoria: categoryMap[categoriaRaw] || categoriaRaw || 'N/A',
     status: 'confirmado',
     idPagamento: String(paymentId),
-    valor: paymentData.transaction_amount || 1,
+    valor: paymentData.transaction_amount ?? 0,
     dataPagamento: serverTimestamp(),
     dataInscricao: serverTimestamp(),
     referencia: paymentData.external_reference || '',

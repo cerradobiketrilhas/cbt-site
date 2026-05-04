@@ -6,7 +6,13 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
-const EVENT_UNIT_PRICE = 5;
+
+function getEventUnitPrice() {
+  const raw = process.env.INSCRIPTION_UNIT_PRICE;
+  if (raw === undefined || String(raw).trim() === '') return 5;
+  const n = Number.parseFloat(String(raw).trim().replace(',', '.'));
+  return Number.isFinite(n) && n > 0 ? n : 5;
+}
 const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
 
 function normalizeAccessToken(rawToken) {
@@ -65,6 +71,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
@@ -135,6 +142,7 @@ export default async function handler(req, res) {
     // Criar preferência no Mercado Pago
     const mercadopago = new MercadoPagoConfig({ accessToken });
     const preference = new Preference(mercadopago);
+    const eventUnitPrice = getEventUnitPrice();
 
     const response = await preference.create({
       body: {
@@ -145,7 +153,7 @@ export default async function handler(req, res) {
             id: '2-treino-cbt',
             title: '2º Treino Cronometrado - CBT',
             quantity: 1,
-            unit_price: EVENT_UNIT_PRICE,
+            unit_price: eventUnitPrice,
             currency_id: 'BRL'
           }
         ],
@@ -186,7 +194,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       preferenceId: response.id,
       checkoutUrl,
-      unitPrice: EVENT_UNIT_PRICE
+      unitPrice: eventUnitPrice
     });
 
   } catch (error) {

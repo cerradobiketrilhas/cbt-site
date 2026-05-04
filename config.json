@@ -29,7 +29,7 @@
       "state": "GO"
     },
     "inscription": {
-      "price": 1,
+      "price": 5,
       "currency": "BRL",
       "status": "open",
       "limitedSpots": true,

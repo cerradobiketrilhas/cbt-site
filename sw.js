@@ -3,7 +3,7 @@
  * Versão 1.0
  */
 
-const CACHE_VERSION = 'cbt-v4';
+const CACHE_VERSION = 'cbt-v5';
 const CACHE_ASSETS = [
   '/',
   '/index.html',
@@ -60,6 +60,11 @@ self.addEventListener('fetch', (event) => {
 
   // Skip cross-origin requests
   if (url.origin !== location.origin) {
+    return;
+  }
+
+  // Never intercept API routes (avoid caching serverless responses)
+  if (url.pathname.startsWith('/api/')) {
     return;
   }
 

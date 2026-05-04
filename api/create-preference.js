@@ -6,11 +6,12 @@
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
-const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN || TEST_ACCESS_TOKEN;
+const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
 
-const mercadopago = new MercadoPagoConfig({
-  accessToken
-});
+function normalizeAccessToken(rawToken) {
+  const token = String(rawToken || '').trim().replace(/^['"]|['"]$/g, '');
+  return token.replace(/^Bearer\s+/i, '');
+}
 
 /**
  * Validar dados do formulário
@@ -73,6 +74,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    const envToken = normalizeAccessToken(process.env.MERCADO_PAGO_ACCESS_TOKEN);
+    const accessToken = envToken || TEST_ACCESS_TOKEN;
+
+    if (!envToken && isProduction) {
+      return res.status(500).json({
+        error: 'Server configuration error',
+        message: 'MERCADO_PAGO_ACCESS_TOKEN não configurado em produção'
+      });
+    }
+
     let rawBody = req.body;
     if (typeof rawBody === 'string') {
       try {
@@ -121,6 +132,7 @@ export default async function handler(req, res) {
     }
 
     // Criar preferência no Mercado Pago
+    const mercadopago = new MercadoPagoConfig({ accessToken });
     const preference = new Preference(mercadopago);
 
     const response = await preference.create({
@@ -132,27 +144,10 @@ export default async function handler(req, res) {
             id: '2-treino-cbt',
             title: '2º Treino Cronometrado - CBT',
             quantity: 1,
-            unit_price: 1,
+            unit_price: 5,
             currency_id: 'BRL'
           }
         ],
-        payer: {
-          name: nome,
-          email: email,
-          phone: {
-            area_code: phoneArea,
-            number: phoneNumber
-          },
-          identification: {
-            type: 'CPF',
-            number: cpf
-          },
-          address: {
-            zip_code: '73000-000',
-            street_name: 'Luziânia',
-            city_name: cidade.split(',')[0]
-          }
-        },
         back_urls: {
           success: 'https://cerradobiketrilhas.com/confirmacao.html',
           failure: 'https://cerradobiketrilhas.com/inscricao.html',
@@ -193,7 +188,11 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Erro ao criar preferência:', error);
+    console.error('Erro ao criar preferência:', {
+      message: error?.message,
+      cause: error?.cause || null,
+      status: error?.status || error?.cause?.status || null
+    });
 
     return res.status(500).json({
       error: 'Internal server error',

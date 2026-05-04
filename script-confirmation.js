@@ -4,6 +4,8 @@
  */
 
 const ConfirmationPage = (() => {
+  const params = new URLSearchParams(window.location.search);
+
   /**
    * Recuperar dados da inscrição
    */
@@ -18,8 +20,7 @@ const ConfirmationPage = (() => {
       }
     }
 
-    // Tentar recuperar de URL params (fallback)
-    const params = new URLSearchParams(window.location.search);
+    // Tentar recuperar de URL params (fallback basico)
     return {
       nome: params.get('nome') || '',
       email: params.get('email') || '',
@@ -64,6 +65,70 @@ const ConfirmationPage = (() => {
   }
 
   /**
+   * Exibe status de processamento no card de confirmacao
+   */
+  function showStatusMessage(message, type = 'info') {
+    const card = document.querySelector('.confirmation-card');
+    if (!card) return;
+
+    const oldMessage = card.querySelector('.warning');
+    if (oldMessage) oldMessage.remove();
+
+    const status = document.createElement('p');
+    status.className = 'warning';
+    status.style.marginBottom = '12px';
+    status.style.color = type === 'error' ? '#fca5a5' : '#86efac';
+    status.textContent = message;
+    card.prepend(status);
+  }
+
+  /**
+   * Confirma pagamento e persiste inscricao no backend
+   */
+  async function confirmAndSaveInscription(data) {
+    const paymentId = params.get('payment_id');
+    const paymentStatus = params.get('status');
+
+    // Evita chamadas desnecessarias ao abrir a pagina sem retorno do checkout
+    if (!paymentId) return;
+
+    if (paymentStatus && paymentStatus !== 'approved') {
+      showStatusMessage('Pagamento ainda não aprovado. Assim que aprovar, a inscrição será confirmada.', 'error');
+      return;
+    }
+
+    try {
+      showStatusMessage('Confirmando pagamento e salvando inscrição...', 'info');
+
+      const response = await fetch('/api/confirm-inscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          paymentId,
+          formData: data
+        })
+      });
+
+      const payload = await response.json();
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.error || payload.message || 'Falha ao confirmar inscrição');
+      }
+
+      const protocoloEl = document.getElementById('conf-protocolo');
+      if (protocoloEl && payload.docId) {
+        protocoloEl.textContent = payload.docId;
+      }
+
+      showStatusMessage('Inscrição confirmada e salva com sucesso.', 'success');
+    } catch (error) {
+      console.error('[Confirmation] Erro ao confirmar inscrição:', error);
+      showStatusMessage('Não foi possível confirmar automaticamente. Entre em contato com a organização.', 'error');
+    }
+  }
+
+  /**
    * Preencher dados na página
    */
   function populateData() {
@@ -105,6 +170,9 @@ const ConfirmationPage = (() => {
 
     // Log
     console.log('[Confirmation] Data populated:', { ...data, email: data.email ? '***' : '' });
+
+    // Confirmar no backend quando vier do checkout aprovado
+    confirmAndSaveInscription(data);
   }
 
   /**

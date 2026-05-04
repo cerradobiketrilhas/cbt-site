@@ -1,11 +1,12 @@
 /**
- * Vercel Function: Webhook - Confirmação de Inscrição
+ * Vercel Function: Confirmação de Inscrição
  * POST /api/confirm-inscription
- * Recebe notificação do Mercado Pago e salva no Firebase Firestore
+ * Valida o pagamento no Mercado Pago e salva no Firebase Firestore
  */
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 // Configurar Firebase (credenciais de teste)
 const firebaseConfig = {
@@ -19,17 +20,51 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
+const mercadopago = new MercadoPagoConfig({
+  accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN || TEST_ACCESS_TOKEN
+});
 
 /**
- * Validar assinatura do Mercado Pago (webhook verification)
- * Nota: Implementar validação real com X-Signature header
+ * Remove tudo que não for digito
  */
-function validateWebhookSignature(req) {
-  // TODO: Implementar validação de assinatura real
-  // const signature = req.headers['x-signature'];
-  // const ts = req.headers['x-request-id'];
-  // Validar HMAC com webhook secret do Mercado Pago
-  return true;
+function onlyDigits(value = '') {
+  return String(value).replace(/\D/g, '');
+}
+
+/**
+ * Monta payload padrao da inscricao
+ */
+function buildInscriptionData(paymentData, formData, paymentId) {
+  const metadata = paymentData.metadata || {};
+  const categoryMap = {
+    elite: 'Elite',
+    sport: 'Sport',
+    amador: 'Amador',
+    feminino: 'Feminino',
+    master: 'Master'
+  };
+
+  const categoriaRaw = formData?.categoria || metadata.categoria || '';
+
+  return {
+    nome: formData?.nome || metadata.nome || paymentData.payer?.first_name || 'N/A',
+    email: formData?.email || paymentData.payer?.email || 'N/A',
+    cpf: onlyDigits(formData?.cpf || metadata.cpf || paymentData.payer?.identification?.number || ''),
+    dataNasc: formData?.dataNasc || metadata.dataNasc || null,
+    telefone: onlyDigits(formData?.telefone || metadata.telefone || paymentData.payer?.phone?.number || ''),
+    cidade: formData?.cidade || metadata.cidade || 'N/A',
+    categoria: categoryMap[categoriaRaw] || categoriaRaw || 'N/A',
+    status: 'confirmado',
+    idPagamento: String(paymentId),
+    valor: paymentData.transaction_amount || 80,
+    dataPagamento: serverTimestamp(),
+    dataInscricao: serverTimestamp(),
+    referencia: paymentData.external_reference || '',
+    descricao: paymentData.description || '2º Treino Cronometrado CBT',
+    metodo: paymentData.payment_method_id || 'N/A',
+    timestamp: new Date().toISOString()
+  };
 }
 
 /**
@@ -50,79 +85,44 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log('[Webhook] Recebido:', req.body);
+    const paymentId = req.body.paymentId || req.body.payment_id;
+    const formData = req.body.formData || req.body.inscriptionData || null;
 
-    // Validar assinatura (opcional para ambiente de teste)
-    if (!validateWebhookSignature(req)) {
-      console.warn('[Webhook] Assinatura inválida');
-      return res.status(401).json({ error: 'Invalid signature' });
+    if (!paymentId) {
+      return res.status(400).json({
+        success: false,
+        error: 'paymentId é obrigatório'
+      });
     }
 
-    // Extrair dados do webhook do Mercado Pago
-    const { type, data } = req.body;
+    // Sempre valida o pagamento com o Mercado Pago no backend
+    const paymentClient = new Payment(mercadopago);
+    const paymentData = await paymentClient.get({ id: String(paymentId) });
 
-    // Processar apenas notificações de pagamento
-    if (type !== 'payment') {
-      console.log('[Webhook] Tipo não suportado:', type);
-      return res.status(200).json({ message: 'Event type not processed' });
+    if (paymentData.status !== 'approved') {
+      return res.status(200).json({
+        success: false,
+        status: paymentData.status,
+        message: 'Pagamento ainda não aprovado'
+      });
     }
 
-    // Buscar dados do pagamento (em produção, seria necessário chamar a API do MP para mais detalhes)
-    const paymentId = data.id;
-    const metadata = data.metadata || {};
-
-    // Apenas processar pagamentos aprovados
-    if (data.status !== 'approved') {
-      console.log('[Webhook] Pagamento não aprovado:', data.status);
-      return res.status(200).json({ message: 'Payment not approved' });
-    }
-
-    // Preparar documento para Firestore
-    const inscriptionData = {
-      // Dados pessoais
-      nome: metadata.nome || 'N/A',
-      email: data.payer?.email || 'N/A',
-      cpf: metadata.cpf || data.payer?.identification?.number || 'N/A',
-      dataNasc: metadata.dataNasc || null,
-      telefone: metadata.telefone || 'N/A',
-      cidade: metadata.cidade || 'N/A',
-      categoria: metadata.categoria || 'N/A',
-
-      // Dados de pagamento
-      status: 'confirmado',
-      idPagamento: paymentId,
-      valor: data.transaction_amount || 80,
-      dataPagamento: serverTimestamp(),
-      dataInscricao: metadata.dataInscricao ? new Date(metadata.dataInscricao) : serverTimestamp(),
-
-      // Metadados adicionais
-      referencia: data.external_reference || '',
-      descricao: data.description || '',
-      metodo: data.payment_method?.type || 'N/A',
-      timestamp: new Date().toISOString()
-    };
+    const inscriptionData = buildInscriptionData(paymentData, formData, paymentId);
 
     // Salvar no Firestore
     const inscricoesRef = collection(db, 'inscricoes');
     const docRef = await addDoc(inscricoesRef, inscriptionData);
 
-    console.log('[Webhook] Inscrição salva:', docRef.id);
-
-    // TODO: Enviar e-mail de confirmação ao usuário
-    // Seria necessário usar serviço como SendGrid, Resend, ou Brevo
-
-    // Responder ao Mercado Pago com 200 OK
     return res.status(200).json({
       success: true,
-      message: 'Inscrição confirmada e salva',
-      docId: docRef.id
+      message: 'Inscrição confirmada e salva no Firestore',
+      docId: docRef.id,
+      status: 'confirmado'
     });
 
   } catch (error) {
-    console.error('[Webhook] Erro ao processar:', error);
-
-    // Responder com 200 mesmo em caso de erro (para não fazer retry infinito)
-    return res.status(200).json({
+    console.error('[Confirm] Erro ao processar:', error);
+    return res.status(500).json({
       success: false,
       error: error.message || 'Erro ao processar webhook'
     });

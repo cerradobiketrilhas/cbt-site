@@ -5,8 +5,11 @@
 
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
+const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
+const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN || TEST_ACCESS_TOKEN;
+
 const mercadopago = new MercadoPagoConfig({
-  accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN
+  accessToken
 });
 
 /**

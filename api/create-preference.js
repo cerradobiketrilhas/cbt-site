@@ -13,6 +13,16 @@ function getEventUnitPrice() {
   const n = Number.parseFloat(String(raw).trim().replace(',', '.'));
   return Number.isFinite(n) && n > 0 ? n : 5;
 }
+
+/** URL pública (sem barra final): back_urls e webhook do MP. Se o DNS do domínio próprio falhar, use https://cbt-site.vercel.app na Vercel. */
+function getPublicSiteBase() {
+  const raw =
+    process.env.PUBLIC_SITE_BASE_URL ||
+    process.env.SITE_URL ||
+    'https://cerradobiketrilhas.com';
+  return String(raw).trim().replace(/\/$/, '');
+}
+
 const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
 
 function normalizeAccessToken(rawToken) {
@@ -143,6 +153,7 @@ export default async function handler(req, res) {
     const mercadopago = new MercadoPagoConfig({ accessToken });
     const preference = new Preference(mercadopago);
     const eventUnitPrice = getEventUnitPrice();
+    const siteBase = getPublicSiteBase();
 
     const response = await preference.create({
       body: {
@@ -158,9 +169,9 @@ export default async function handler(req, res) {
           }
         ],
         back_urls: {
-          success: 'https://cerradobiketrilhas.com/confirmacao.html',
-          failure: 'https://cerradobiketrilhas.com/inscricao.html',
-          pending: 'https://cerradobiketrilhas.com/confirmacao.html'
+          success: `${siteBase}/confirmacao.html`,
+          failure: `${siteBase}/inscricao.html`,
+          pending: `${siteBase}/confirmacao.html`
         },
         // 'all' = volta ao site mesmo com Pix ainda pending; a página confirma e faz polling até approved
         auto_return: 'all',
@@ -170,7 +181,7 @@ export default async function handler(req, res) {
           excluded_payment_methods: [],
           installments: 12
         },
-        notification_url: 'https://cerradobiketrilhas.com/api/confirm-inscription',
+        notification_url: `${siteBase}/api/confirm-inscription`,
         external_reference: `inscricao_${cpf}_${Date.now()}`,
         metadata: {
           nome,

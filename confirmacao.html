@@ -212,10 +212,47 @@
   <script>
     (function () {
       const version = Date.now();
+      const baseScript = document.createElement("script");
+      baseScript.src = `script-optimized.js?v=${version}`;
+      baseScript.async = false;
+      document.body.appendChild(baseScript);
+
       const appScript = document.createElement("script");
       appScript.src = `script-confirmation.js?v=${version}`;
       appScript.async = false;
       document.body.appendChild(appScript);
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const hideLoader = function () {
+        const loader = document.getElementById("loader");
+        if (!loader) return;
+        loader.classList.add("loaded");
+        loader.addEventListener(
+          "transitionend",
+          function () {
+            try {
+              loader.remove();
+            } catch (e) {}
+          },
+          { once: true }
+        );
+      };
+
+      if (document.readyState === "complete") {
+        hideLoader();
+      } else {
+        window.addEventListener("load", hideLoader, { once: true });
+      }
+      window.addEventListener(
+        "DOMContentLoaded",
+        function () {
+          setTimeout(hideLoader, 5000);
+        },
+        { once: true }
+      );
     })();
   </script>
 

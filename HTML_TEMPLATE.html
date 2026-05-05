@@ -30,15 +30,9 @@
   
   <link rel="stylesheet" href="style.css">
 
-  <!-- Config loader (cache bust) -->
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'config.js?v=' + Date.now();
-      document.head.appendChild(s);
-    })();
-  </script>
+  <script src="config.js" defer></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script src="script-security-bootstrap.js" defer></script>
 </head>
 
 <body>
@@ -51,26 +45,6 @@
   <!-- QRCode library (para pagina de doacoes) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   
-  <!-- Main optimized app script with cache busting -->
-  <script>
-    (function () {
-      const version = Date.now();
-      const appScript = document.createElement("script");
-      appScript.src = `script-optimized.js?v=${version}`;
-      appScript.async = false;
-      document.body.appendChild(appScript);
-    })();
-  </script>
-  
-  <!-- Service Worker Registration for offline support -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[SW] Registered:', reg))
-          .catch(err => console.error('[SW] Registration failed:', err));
-      });
-    }
-  </script>
+  <script src="script-optimized.js" defer></script>
 </body>
 </html>

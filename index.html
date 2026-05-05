@@ -33,69 +33,8 @@
 
   <script src="config.js" defer></script>
   
-  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX'); // Substituir G-XXXXXXXXXX pelo seu ID
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      const isDonationPage = document.location.pathname.includes('doacao');
-      if (isDonationPage) {
-        gtag('event', 'view_donation_page', {
-          page_title: document.title,
-          page_location: window.location.href
-        });
-      }
-    });
-    
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('btn-primary') || 
-          e.target.closest('.btn-primary')) {
-        gtag('event', 'click_donation_button', {
-          button_text: e.target.textContent || e.target.closest('.btn-primary').textContent
-        });
-      }
-    });
-  </script>
-  
-  <!-- JSON-LD Schema Markup -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Cerrado Bike Trilhas",
-    "alternateName": "CBT",
-    "url": "https://cerradobiketrilhas.com",
-    "logo": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
-    "description": "Complexo de trilhas em meio ao Cerrado, mantido por voluntários que acreditam em esporte, natureza e comunidade.",
-    "image": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Luziânia",
-      "addressLocality": "Luziânia",
-      "addressRegion": "GO",
-      "postalCode": "73000-000",
-      "addressCountry": "BR"
-    },
-    "sameAs": [
-      "https://www.instagram.com/cerradobiketrilhas"
-    ],
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "Customer Service",
-      "url": "https://cerradobiketrilhas.com/contato.html"
-    },
-    "founder": [
-      {
-        "@type": "Person",
-        "name": "Comunidade de Voluntários"
-      }
-    ]
-  }
-  </script>
+  <script src="script-security-bootstrap.js" defer></script>
 </head>
 
 <body>
@@ -491,34 +430,6 @@
 
   <script src="script-optimized.js" defer></script>
   
-  <script>
-    (function () {
-      var v = document.querySelector('.hero-video');
-      if (!v) return;
-      v.muted = true;
-      var play = function () {
-        var p = v.play();
-        if (p && typeof p.catch === 'function') p.catch(function () {});
-      };
-      v.addEventListener('loadeddata', play);
-      v.addEventListener('canplay', play);
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) play();
-      });
-      play();
-    })();
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[SW] Registered'))
-          .catch(err => console.error('[SW] Registration failed:', err));
-      });
-    }
-  </script>
-
   <!-- Back to top button -->
   <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

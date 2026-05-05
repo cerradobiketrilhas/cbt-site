@@ -1,5 +1,7 @@
 # 🚀 GUIA RÁPIDO DE DEPLOY - CBT
 
+> Baseline oficial de segurança: `SECURITY_BASELINE_2026-05.md` (fonte única de verdade).
+
 ## 1️⃣ TESTAR LOCALMENTE (5 min)
 
 ### Windows - Python SimpleHTTP
@@ -65,10 +67,9 @@ git push -u origin main
 1. Ir para: https://analytics.google.com/
 2. Criar propriedade para o domínio
 3. Copiar ID (ex: `G-XXXXXXXXXX`)
-4. No `index.html`, substituir:
-   ```javascript
-   gtag('config', 'G-XXXXXXXXXX'); // ← seu ID aqui
-   ```
+4. Substituir `G-XXXXXXXXXX` nos arquivos:
+   - `script-security-bootstrap.js`
+   - tags `<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX">` dos HTMLs
 
 ### Testar Performance
 - Google PageSpeed: https://pagespeed.web.dev
@@ -93,6 +94,8 @@ git push -u origin main
 - [ ] Headers de segurança ativados (teste em: https://securityheaders.com)
 - [ ] HTTPS ativado e redirecionando HTTP
 - [ ] Certificado SSL válido
+- [ ] CSP ativa sem `unsafe-inline`
+- [ ] Nenhum `<script>` inline nas páginas HTML
 
 ---
 

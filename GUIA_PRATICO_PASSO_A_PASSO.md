@@ -1,5 +1,7 @@
 # 📋 GUIA PRÁTICO PASSO-A-PASSO - CBT Site
 
+> **Atualização de segurança (05 Mai 2026):** use este guia como referência histórica. Para deploy atual, siga também `DEPLOYMENT_GUIDE.md` e `GUIA_DEPLOY_RAPIDO.md` já alinhados com CSP estrita, HTTPS obrigatório e hardening de API.
+
 **Documento para equipe: Como implementar melhorias imediatamente**
 
 ---

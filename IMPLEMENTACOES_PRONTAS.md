@@ -1,6 +1,8 @@
 # 🔧 IMPLEMENTAÇÕES PRONTAS - CBT Site
 **Código pronto para copiar/colar - Estatísticas de impacto incluídas**
 
+> **Atualização de segurança (05 Mai 2026):** este documento é histórico. O padrão atual de produção usa CSP sem `unsafe-inline`, sem scripts inline nos HTMLs, bootstrap em `script-security-bootstrap.js`, headers via `vercel.json` + `.htaccess`/`nginx.conf`, e variáveis de ambiente sem tokens `TEST-*` hardcoded.
+
 ---
 
 ## 📋 ÍNDICE DAS IMPLEMENTAÇÕES

@@ -1,6 +1,8 @@
 # ✅ MELHORIAS IMPLEMENTADAS - CBT SITE
 **Data:** 27 de Abril de 2026
 
+> **Atualização de segurança (05 Mai 2026):** este relatório é histórico. A versão atual em produção foi reforçada com CSP sem inline, headers HTTP de segurança, HTTPS forçado, CORS restritivo e rate limiting nas APIs.
+
 ---
 
 ## 🎯 Resumo Executivo

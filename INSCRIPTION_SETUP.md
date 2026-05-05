@@ -1,5 +1,7 @@
 # 📋 Página de Inscrição - Guia de Configuração
 
+> Baseline oficial de segurança: `SECURITY_BASELINE_2026-05.md` (fonte única de verdade).
+
 Este documento explica como usar e configurar a página de inscrição do CBT com pagamento via Mercado Pago.
 
 ## 🚀 O que foi implementado
@@ -33,8 +35,11 @@ Este documento explica como usar e configurar a página de inscrição do CBT co
 4. Adicione as seguintes variáveis:
 
 ```
-MERCADO_PAGO_ACCESS_TOKEN=TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667
-MERCADO_PAGO_PUBLIC_KEY=TEST-b2cc91ad-a534-4253-81ee-939d8d1df20f
+MERCADO_PAGO_ACCESS_TOKEN=APP_USR-...   # produção
+MERCADO_PAGO_PUBLIC_KEY=APP_USR-...     # produção (apenas frontend quando necessário)
+MERCADO_PAGO_WEBHOOK_SECRET=...         # segredo de validação x-signature
+PUBLIC_SITE_BASE_URL=https://seu-dominio.com.br
+ALLOWED_ORIGINS=https://seu-dominio.com.br,https://www.seu-dominio.com.br
 ```
 
 **Notas:**
@@ -182,8 +187,8 @@ Os seguintes eventos são rastreados:
 ### ⚠️ Ainda não implementado
 - Notificação por email (pode usar SendGrid/Brevo/Resend)
 - Admin dashboard para visualizar inscrições
-- Validação de assinatura do webhook (Mercado Pago HMAC)
-- Rate limiting no servidor
+- Cookies de sessão `HttpOnly + Secure + SameSite=Strict` (se houver autenticação)
+- CSRF token formal para operações state-changing baseadas em sessão
 
 ---
 

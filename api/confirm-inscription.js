@@ -19,6 +19,11 @@ import {
   where
 } from 'firebase/firestore';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
+import {
+  applyCorsPreflight,
+  consumeRateLimit,
+  getClientIp
+} from './_lib/security.js';
 
 // Configurar Firebase (credenciais de teste)
 const firebaseConfig = {
@@ -32,7 +37,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
 const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
 
 function normalizeAccessToken(rawToken) {
@@ -277,10 +281,7 @@ function buildInscriptionData(paymentData, formData, paymentId) {
  * Handler da função
  */
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 'no-store');
+  applyCorsPreflight(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -291,6 +292,20 @@ export default async function handler(req, res) {
   }
 
   try {
+    const rate = consumeRateLimit({
+      key: `confirm-inscription:${getClientIp(req)}`,
+      maxRequests: 30,
+      windowMs: 15 * 60 * 1000,
+      blockMs: 10 * 60 * 1000
+    });
+    if (!rate.allowed) {
+      res.setHeader('Retry-After', String(rate.retryAfterSec));
+      return res.status(429).json({
+        success: false,
+        error: 'Muitas requisições. Tente novamente em instantes.'
+      });
+    }
+
     let body = req.body;
     if (body == null || body === '') {
       body = {};
@@ -307,12 +322,14 @@ export default async function handler(req, res) {
     }
 
     const envToken = normalizeAccessToken(process.env.MERCADO_PAGO_ACCESS_TOKEN);
-    const accessToken = envToken || TEST_ACCESS_TOKEN;
+    const accessToken = envToken;
 
-    if (!envToken && isProduction) {
+    if (!envToken) {
       return res.status(500).json({
         success: false,
-        error: 'MERCADO_PAGO_ACCESS_TOKEN não configurado em produção'
+        error: isProduction
+          ? 'Serviço de confirmação indisponível no momento.'
+          : 'MERCADO_PAGO_ACCESS_TOKEN não configurado no ambiente.'
       });
     }
 
@@ -407,7 +424,7 @@ export default async function handler(req, res) {
     console.error('[Confirm] Erro ao processar:', error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Erro ao processar webhook'
+      error: 'Erro ao processar webhook'
     });
   }
 }

@@ -1,5 +1,7 @@
 # CBT - Site Optimization Report (Nível Senior)
 
+> **Atualização de segurança (05 May 2026):** this report is historical. Current production baseline enforces strict CSP without inline scripts, hardened security headers, HTTPS-only routing, and API hardening controls.
+
 ## ✅ Otimizações Implementadas
 
 ### 1. **Arquivos Criados**

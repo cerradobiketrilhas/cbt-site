@@ -1,5 +1,7 @@
 # 🚀 CBT Site - Otimizações de Nível Senior - RESUMO EXECUTIVO
 
+> **Atualização de segurança (05 Mai 2026):** este documento é histórico. O padrão atual de produção usa CSP sem inline, bootstrap seguro em `script-security-bootstrap.js`, HTTPS forçado e endurecimento das APIs serverless.
+
 ## Problemas Encontrados (ANTES)
 
 ### 🔴 **Problema 1: Dados Hardcoded**

@@ -1,5 +1,7 @@
 # 📋 SUMÁRIO EXECUTIVO - SESSÃO 27 ABRIL 2026
 
+> **Atualização de segurança (05 Mai 2026):** sumário histórico. O estado atual de produção já incorpora CSP sem inline, headers de segurança atualizados, HTTPS obrigatório e reforços no backend serverless.
+
 ## 🎯 O QUE FOI FEITO NESTA SESSÃO
 
 ### ⚡ Performance - Otimização de Imagens

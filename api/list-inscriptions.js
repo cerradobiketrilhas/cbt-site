@@ -5,6 +5,11 @@
 
 import { initializeApp } from 'firebase/app';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import {
+  applyCorsPreflight,
+  consumeRateLimit,
+  getClientIp
+} from './_lib/security.js';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyB0JARQ6_f2yFPYXjlmcjbeD5TQI9t7Mnk',
@@ -45,10 +50,7 @@ function orderGroupKeys(keys) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 'no-store');
+  applyCorsPreflight(req, res, 'GET, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -59,6 +61,20 @@ export default async function handler(req, res) {
   }
 
   try {
+    const rate = consumeRateLimit({
+      key: `list-inscriptions:${getClientIp(req)}`,
+      maxRequests: 60,
+      windowMs: 15 * 60 * 1000,
+      blockMs: 5 * 60 * 1000
+    });
+    if (!rate.allowed) {
+      res.setHeader('Retry-After', String(rate.retryAfterSec));
+      return res.status(429).json({
+        success: false,
+        error: 'Muitas requisições. Tente novamente em instantes.'
+      });
+    }
+
     const snap = await getDocs(collection(db, 'inscricoes'));
     const byCat = new Map();
 
@@ -102,7 +118,7 @@ export default async function handler(req, res) {
     console.error('[list-inscriptions]', err);
     return res.status(500).json({
       success: false,
-      error: err.message || 'Erro ao carregar inscrições'
+      error: 'Erro ao carregar inscrições'
     });
   }
 }

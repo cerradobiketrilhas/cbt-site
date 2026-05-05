@@ -1,5 +1,8 @@
 # ⚡ TESTE RÁPIDO - CBT (5 MINUTOS)
 
+> Baseline oficial de segurança: `SECURITY_BASELINE_2026-05.md` (fonte única de verdade).
+> **Atualização de segurança (05 Mai 2026):** para validar produção, além dos testes abaixo, confira CSP sem inline, headers de segurança, HTTPS forçado e ausência de tokens de teste hardcoded.
+
 ## 🔧 Pré-requisito
 Python instalado (temos ✅)
 

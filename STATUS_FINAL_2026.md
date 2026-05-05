@@ -1,5 +1,7 @@
 # 🎉 CBT - CERRADO BIKE TRILHAS | STATUS FINAL
 
+> **Atualização de segurança (05 Mai 2026):** este documento é histórico. O baseline atual de produção remove scripts inline, aplica CSP estrita sem `unsafe-inline`, força HTTPS e usa hardening de API (CORS restritivo, rate limiting e erros sanitizados).
+
 > **Status**: 🟢 **PRONTO PARA PRODUÇÃO** (27 Abril 2026)
 
 ---

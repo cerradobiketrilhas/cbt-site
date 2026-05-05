@@ -2,6 +2,8 @@
 **Data:** 27 de Abril de 2026  
 **Status:** Análise de nível profissional (Startup-ready)
 
+> **Atualização de segurança (05 Mai 2026):** este relatório é histórico. O estado atual de produção já inclui hardening de headers/HTTPS, CSP estrita sem inline, remoção de tokens hardcoded e proteção adicional nas APIs.
+
 ---
 
 ## 📑 ÍNDICE

@@ -1,5 +1,7 @@
 # ✅ CBT - Relatório de Otimizações Implementadas (27 Abr 2026)
 
+> **Atualização de segurança (05 Mai 2026):** este documento é histórico. O baseline atual de segurança inclui CSP estrita sem scripts inline, hardening de headers e proteção adicional de APIs para produção.
+
 ## 📊 Melhorias de Performance Implementadas
 
 ### 1. **Conversão de Imagens para WebP** ✅

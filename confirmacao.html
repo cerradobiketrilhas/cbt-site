@@ -28,42 +28,9 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Config (cache bust válido; evita src HTML quebrado com "+ Date.now()") -->
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'config.js?v=' + Date.now();
-      document.head.appendChild(s);
-    })();
-  </script>
-
-  <!-- Google Analytics 4 -->
+  <script src="config.js" defer></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-
-    document.addEventListener('DOMContentLoaded', function() {
-      gtag('event', 'payment_complete', {
-        page_title: document.title,
-        page_location: window.location.href
-      });
-    });
-  </script>
-
-  <!-- JSON-LD Schema Markup (Organization) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Cerrado Bike Trilhas",
-    "url": "https://cerradobiketrilhas.com",
-    "logo": "https://cerradobiketrilhas.com/img/logo-cbt.webp"
-  }
-  </script>
+  <script src="script-security-bootstrap.js" defer></script>
 </head>
 
 <body>
@@ -200,63 +167,8 @@
     <p>© 2026 Cerrado Bike Trilhas — Projeto voluntário, sem fins lucrativos.</p>
   </footer>
 
-  <script>
-    (function () {
-      const version = Date.now();
-      const baseScript = document.createElement("script");
-      baseScript.src = `script-optimized.js?v=${version}`;
-      baseScript.async = false;
-      document.body.appendChild(baseScript);
-
-      const appScript = document.createElement("script");
-      appScript.src = `script-confirmation.js?v=${version}`;
-      appScript.async = false;
-      document.body.appendChild(appScript);
-    })();
-  </script>
-
-  <script>
-    (function () {
-      const hideLoader = function () {
-        const loader = document.getElementById("loader");
-        if (!loader) return;
-        loader.classList.add("loaded");
-        loader.addEventListener(
-          "transitionend",
-          function () {
-            try {
-              loader.remove();
-            } catch (e) {}
-          },
-          { once: true }
-        );
-      };
-
-      if (document.readyState === "complete") {
-        hideLoader();
-      } else {
-        window.addEventListener("load", hideLoader, { once: true });
-      }
-      window.addEventListener(
-        "DOMContentLoaded",
-        function () {
-          setTimeout(hideLoader, 5000);
-        },
-        { once: true }
-      );
-    })();
-  </script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[SW] Registered'))
-          .catch(err => console.error('[SW] Registration failed:', err));
-      });
-    }
-  </script>
+  <script src="script-optimized.js" defer></script>
+  <script src="script-confirmation.js" defer></script>
 
   <!-- Back to top button -->
   <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">

@@ -1,5 +1,7 @@
 # 🚀 CBT Site - Versão Melhorada (Startup Ready)
 
+> Baseline oficial de segurança: `SECURITY_BASELINE_2026-05.md` (fonte única de verdade).
+
 **Versão:** 2.0 (Otimizada)  
 **Data:** 27 de Abril de 2026  
 **Status:** ✅ Pronto para Deploy
@@ -105,13 +107,8 @@ http://localhost:8000
 .\setup-analytics.ps1 -AnalyticsId "G-XXXXXXXXXX"
 ```
 Ou manualmente substituir `G-XXXXXXXXXX` em:
-- `index.html`
-- `sobre.html`
-- `localizacao.html`
-- `doacoes.html`
-- `ajudar.html`
-- `transparencia.html`
-- `contato.html`
+- `script-security-bootstrap.js`
+- tags `<script async ... gtag/js?id=G-XXXXXXXXXX>` nos HTMLs públicos
 
 ---
 
@@ -208,6 +205,8 @@ git push origin main
 - [ ] Sitemap XML existe e é válido
 - [ ] Robots.txt existe e é válido
 - [ ] Todos os assets (CSS, JS) carregam
+- [ ] CSP ativa sem `unsafe-inline`
+- [ ] Nenhum `<script>` inline nas páginas HTML
 
 ### SEO
 - [ ] JSON-LD schema validado (schema.org/validate)
@@ -227,7 +226,7 @@ git push origin main
 
 ### Analytics não funciona
 **Problema:** Placeholder `G-XXXXXXXXXX` ainda existe  
-**Solução:** Buscar e substituir com ID real em TODOS os 7 arquivos HTML
+**Solução:** Substituir em `script-security-bootstrap.js` e nos HTMLs que carregam GA.
 
 ### Newsletter form não funciona
 **Problema:** ID `newsletter-form` ou `newsletter-email` não encontrado  

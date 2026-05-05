@@ -28,69 +28,9 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Config (cache bust; evita src HTML inválido com "+ Date.now()") -->
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'config.js?v=' + Date.now();
-      document.head.appendChild(s);
-    })();
-  </script>
-
-  <!-- Google Analytics 4 -->
+  <script src="config.js" defer></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-
-    document.addEventListener('DOMContentLoaded', function() {
-      gtag('event', 'view_event_page', {
-        page_title: document.title,
-        page_location: window.location.href
-      });
-    });
-  </script>
-
-  <!-- JSON-LD Schema Markup (Event) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "2º Treino Cronometrado CBT",
-    "description": "Segundo treino cronometrado do Cerrado Bike Trilhas no Desafio Corguinhó II",
-    "startDate": "2026-07-11T08:00:00-03:00",
-    "endDate": "2026-07-12T17:00:00-03:00",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-    "location": {
-      "@type": "Place",
-      "name": "Desafio Corguinhó II",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Luziânia",
-        "addressLocality": "Luziânia",
-        "addressRegion": "GO",
-        "addressCountry": "BR"
-      }
-    },
-    "organizer": {
-      "@type": "Organization",
-      "name": "Cerrado Bike Trilhas",
-      "url": "https://cerradobiketrilhas.com"
-    },
-    "offers": {
-      "@type": "Offer",
-      "url": "https://cerradobiketrilhas.com/inscricao.html",
-      "price": "80",
-      "priceCurrency": "BRL",
-      "availability": "https://schema.org/LimitedAvailability",
-      "validFrom": "2026-04-29T00:00:00-03:00"
-    }
-  }
-  </script>
+  <script src="script-security-bootstrap.js" defer></script>
 </head>
 
 <body>
@@ -331,55 +271,9 @@
     <p>© 2026 Cerrado Bike Trilhas — Projeto voluntário, sem fins lucrativos.</p>
   </footer>
 
-  <script>
-    (function () {
-      const version = Date.now();
-      const baseScript = document.createElement("script");
-      baseScript.src = `script-optimized.js?v=${version}`;
-      baseScript.async = false;
-      document.body.appendChild(baseScript);
-
-      const appScript = document.createElement("script");
-      appScript.src = `script-inscription.js?v=${version}`;
-      appScript.async = false;
-      document.body.appendChild(appScript);
-
-      const listaScript = document.createElement("script");
-      listaScript.src = `script-inscricao-lista.js?v=${version}`;
-      listaScript.async = false;
-      document.body.appendChild(listaScript);
-    })();
-  </script>
-
-  <script>
-    (function () {
-      const hideLoader = function () {
-        const loader = document.getElementById('loader');
-        if (!loader) return;
-        loader.classList.add('loaded');
-        loader.addEventListener('transitionend', function () {
-          try { loader.remove(); } catch (e) {}
-        }, { once: true });
-      };
-
-      if (document.readyState === 'complete') {
-        hideLoader();
-      } else {
-        window.addEventListener('load', hideLoader, { once: true });
-      }
-    })();
-  </script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[SW] Registered'))
-          .catch(err => console.error('[SW] Registration failed:', err));
-      });
-    }
-  </script>
+  <script src="script-optimized.js" defer></script>
+  <script src="script-inscription.js" defer></script>
+  <script src="script-inscricao-lista.js" defer></script>
 
   <!-- Back to top button -->
   <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">

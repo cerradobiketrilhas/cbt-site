@@ -28,58 +28,9 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Config (cache bust; evita src HTML inválido com "+ Date.now()") -->
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'config.js?v=' + Date.now();
-      document.head.appendChild(s);
-    })();
-  </script>
-
-  <!-- Google Analytics 4 -->
+  <script src="config.js" defer></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-
-    document.addEventListener('DOMContentLoaded', function() {
-      gtag('event', 'page_view', { 'page_path': window.location.pathname });
-    });
-  </script>
-
-  <!-- JSON-LD Schema Markup -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Cerrado Bike Trilhas",
-    "alternateName": "CBT",
-    "url": "https://cerradobiketrilhas.com",
-    "logo": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
-    "description": "Complexo de trilhas em meio ao Cerrado, mantido por voluntários que acreditam em esporte, natureza e comunidade.",
-    "image": "https://cerradobiketrilhas.com/img/logo-cbt.webp",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Luziânia",
-      "addressLocality": "Luziânia",
-      "addressRegion": "GO",
-      "postalCode": "73000-000",
-      "addressCountry": "BR"
-    },
-    "sameAs": [
-      "https://www.instagram.com/cerradobiketrilhas"
-    ],
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "Customer Service",
-      "url": "https://cerradobiketrilhas.com/contato.html"
-    }
-  }
-  </script>
+  <script src="script-security-bootstrap.js" defer></script>
 </head>
 
 <body>
@@ -139,26 +90,7 @@
     </svg>
   </button>
 
-  <script>
-    (function () {
-      const version = Date.now();
-      const appScript = document.createElement("script");
-      appScript.src = `script-optimized.js?v=${version}`;
-      appScript.async = false;
-      document.body.appendChild(appScript);
-    })();
-  </script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[SW] Registered'))
-          .catch(err => console.error('[SW] Registration failed:', err));
-      });
-    }
-  </script>
+  <script src="script-optimized.js" defer></script>
 
 </body>
 </html>

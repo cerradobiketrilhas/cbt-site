@@ -10,7 +10,7 @@
     "build": "node -e \"console.log('Build estático concluído')\""
   },
   "dependencies": {
-    "firebase": "^10.7.0",
+    "firebase": "^12.12.1",
     "mercadopago": "^2.12.0"
   },
   "engines": {

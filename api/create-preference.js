@@ -5,8 +5,11 @@
 
 import { randomUUID } from 'node:crypto';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-
-const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a082f24756-1022849667';
+import {
+  applyCorsPreflight,
+  consumeRateLimit,
+  getClientIp
+} from './_lib/security.js';
 
 function getEventUnitPrice() {
   const raw = process.env.INSCRIPTION_UNIT_PRICE;
@@ -73,16 +76,7 @@ function validateData(data) {
  * Handler da função
  */
 export default async function handler(req, res) {
-  // CORS: ecoar origem permite localhost, preview Vercel e domínio de produção
-  const requestOrigin = req.headers.origin;
-  res.setHeader(
-    'Access-Control-Allow-Origin',
-    requestOrigin || '*'
-  );
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-store');
+  applyCorsPreflight(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
@@ -93,13 +87,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    const envToken = normalizeAccessToken(process.env.MERCADO_PAGO_ACCESS_TOKEN);
-    const accessToken = envToken || TEST_ACCESS_TOKEN;
+    const rate = consumeRateLimit({
+      key: `create-preference:${getClientIp(req)}`,
+      maxRequests: 20,
+      windowMs: 15 * 60 * 1000,
+      blockMs: 10 * 60 * 1000
+    });
+    if (!rate.allowed) {
+      res.setHeader('Retry-After', String(rate.retryAfterSec));
+      return res.status(429).json({
+        error: 'Too many requests',
+        message: 'Tente novamente em instantes.'
+      });
+    }
 
-    if (!envToken && isProduction) {
+    const envToken = normalizeAccessToken(process.env.MERCADO_PAGO_ACCESS_TOKEN);
+    const accessToken = envToken;
+
+    if (!envToken) {
       return res.status(500).json({
         error: 'Server configuration error',
-        message: 'MERCADO_PAGO_ACCESS_TOKEN não configurado em produção'
+        message: isProduction
+          ? 'Serviço de pagamento indisponível no momento.'
+          : 'MERCADO_PAGO_ACCESS_TOKEN não configurado no ambiente.'
       });
     }
 
@@ -218,7 +228,7 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       error: 'Internal server error',
-      message: error.message || 'Falha ao processar inscrição'
+      message: 'Falha ao processar inscrição'
     });
   }
 }

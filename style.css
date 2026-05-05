@@ -580,9 +580,9 @@ button {
 /* ===== NAV ===== */
 
 .nav {
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -643,8 +643,9 @@ button {
   align-items: center;
   gap: 6px;
   margin-left: auto;
+  flex: 1 1 auto;
   min-width: 0;
-  max-width: min(780px, calc(100vw - 260px));
+  max-width: none;
   flex-wrap: wrap;
   justify-content: flex-end;
   row-gap: 4px;
@@ -662,6 +663,41 @@ button {
     color 0.25s ease,
     background-color 0.25s ease,
     transform 0.25s ease;
+}
+
+@media (max-width: 1280px) {
+  .nav {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+
+  .nav-brand {
+    gap: 10px;
+  }
+
+  .logo img {
+    height: 42px;
+    padding: 6px;
+  }
+
+  .nav-brand-title {
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-brand-subtitle {
+    font-size: 0.66rem;
+  }
+
+  .nav-menu {
+    gap: 4px;
+  }
+
+  .nav-link {
+    padding: 9px 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
 }
 
 .nav-link::after {

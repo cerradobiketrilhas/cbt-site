@@ -10,9 +10,9 @@ const TEST_ACCESS_TOKEN = 'TEST-2437728556196941-042910-54d8e5c572ebc76af02a52a0
 
 function getEventUnitPrice() {
   const raw = process.env.INSCRIPTION_UNIT_PRICE;
-  if (raw === undefined || String(raw).trim() === '') return 5;
+  if (raw === undefined || String(raw).trim() === '') return 80;
   const n = Number.parseFloat(String(raw).trim().replace(',', '.'));
-  return Number.isFinite(n) && n > 0 ? n : 5;
+  return Number.isFinite(n) && n > 0 ? n : 80;
 }
 
 /**

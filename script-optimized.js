@@ -30,6 +30,28 @@ function throttle(func, limit) {
 }
 
 /**
+ * Utility: script loader with cache by URL
+ */
+const __loadedScriptPromises = new Map();
+function loadExternalScript(url) {
+  if (__loadedScriptPromises.has(url)) {
+    return __loadedScriptPromises.get(url);
+  }
+
+  const promise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+
+  __loadedScriptPromises.set(url, promise);
+  return promise;
+}
+
+/**
  * Utility: Lazy load images
  */
 function setupLazyLoading() {
@@ -459,12 +481,42 @@ function initSite() {
   const pixCopyButton = document.querySelector("[data-pix-copy]");
   const qrcodeEl = document.getElementById("qrcode");
 
-  if (CONFIG && typeof QRCode !== "undefined") {
+  if (CONFIG) {
     CONFIG.load().then((config) => {
       const pixCode = config.donation.pixCode;
+      let qrRendered = false;
 
-      if (qrcodeEl && !qrcodeEl.innerHTML) {
-        new QRCode(qrcodeEl, { text: pixCode, width: 200, height: 200 });
+      const renderQrCode = async () => {
+        if (!qrcodeEl || qrRendered) return;
+
+        try {
+          if (typeof QRCode === "undefined") {
+            await loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js");
+          }
+          if (typeof QRCode !== "undefined" && !qrcodeEl.innerHTML) {
+            new QRCode(qrcodeEl, { text: pixCode, width: 200, height: 200 });
+            qrRendered = true;
+          }
+        } catch (error) {
+          console.error("Erro ao carregar biblioteca de QRCode:", error);
+        }
+      };
+
+      if (qrcodeEl) {
+        if ("IntersectionObserver" in window) {
+          const qrObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                renderQrCode();
+                observer.disconnect();
+              }
+            });
+          }, { rootMargin: "200px 0px" });
+
+          qrObserver.observe(qrcodeEl);
+        } else {
+          renderQrCode();
+        }
       }
 
       if (pixTextarea) {
@@ -530,7 +582,7 @@ if (backToTopButton) {
     } else {
       backToTopButton.classList.remove('show');
     }
-  });
+  }, { passive: true });
 
   backToTopButton.addEventListener('click', () => {
     window.scrollTo({

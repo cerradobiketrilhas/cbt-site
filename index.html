@@ -23,20 +23,15 @@
   
   <title>CBT - Cerrado Bike Trilhas</title>
   
-  <!-- Preload critical fonts -->
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" as="style">
-  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap">
+  <link rel="preload" href="img/hero-bg.jpg" as="image" fetchpriority="high">
+  <link rel="preload" href="img/logo-cbt.webp" as="image" type="image/webp">
+
   <link rel="stylesheet" href="style.css">
 
-  <!-- Config (cache bust; evita src HTML inválido com "+ Date.now()") -->
-  <script>
-    (function () {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'config.js?v=' + Date.now();
-      document.head.appendChild(s);
-    })();
-  </script>
+  <script src="config.js" defer></script>
   
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -114,7 +109,14 @@
         <div class="logo">
           <picture>
             <source srcset="img/logo-cbt.webp" type="image/webp">
-            <img src="img/logo-cbt.jpeg" alt="Cerrado Bike Trilhas" loading="lazy">
+            <img
+              src="img/logo-cbt.jpeg"
+              alt="Cerrado Bike Trilhas"
+              width="240"
+              height="80"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async">
           </picture>
         </div>
         <span class="nav-brand-text">
@@ -152,9 +154,9 @@
         loop
         playsinline
         webkit-playsinline
-        preload="auto"
+        preload="metadata"
         disablePictureInPicture>
-        <source src="img/hero.mp4" type="video/mp4">
+        <source src="img/hero.mp4" type="video/mp4" media="(min-width: 901px)">
       </video>
       <div class="section-inner section-inner--hero">
         <p class="eyebrow fade-up">Projeto voluntário de trilhas</p>
@@ -487,17 +489,7 @@
     <p>© 2026 Cerrado Bike Trilhas — Projeto voluntário, sem fins lucrativos.</p>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-  
-  <script>
-    (function () {
-      const version = Date.now();
-      const appScript = document.createElement("script");
-      appScript.src = `script-optimized.js?v=${version}`;
-      appScript.async = false;
-      document.body.appendChild(appScript);
-    })();
-  </script>
+  <script src="script-optimized.js" defer></script>
   
   <script>
     (function () {
